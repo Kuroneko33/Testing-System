@@ -1,0 +1,69 @@
+﻿<Window x:Class="TestingSystem.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestingSystem"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <SolidColorBrush x:Key="brushWatermarkBackground" Color="White" />
+        <SolidColorBrush x:Key="brushWatermarkForeground" Color="LightSteelBlue" />
+        <SolidColorBrush x:Key="brushWatermarkBorder" Color="Indigo" />
+        <Style x:Key="EntryFieldStyle" TargetType="Grid" >
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Window.Resources>
+    <StackPanel>
+        <GroupBox Header="Редактирование вопроса" Padding="5">
+            <ScrollViewer>
+                <Grid ShowGridLines="True">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition ></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
+                        <Grid Grid.Row="0" Background="{StaticResource brushWatermarkBackground}" Style="{StaticResource EntryFieldStyle}" >
+                            <TextBlock Name="WatermarkTextBlock" Margin="2 1" Text="Вопрос" Foreground="{StaticResource brushWatermarkForeground}" Visibility="Visible" />
+                            <TextBox Name="txtUserEntry" MinHeight="20" TextWrapping="Wrap" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" TextChanged="txtUserEntry_TextChanged" />
+                        </Grid>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="5">
+                        <ComboBox Height="20" VerticalAlignment="Top" SelectionChanged="ComboBox_Selected">
+                            <ComboBoxItem IsSelected="True">
+                                <TextBlock>Один из списка</TextBlock>
+                            </ComboBoxItem>
+                            <TextBlock>Несколько из списка</TextBlock>
+                            <TextBlock>Сопоставление</TextBlock>
+                            <TextBlock>Порядок</TextBlock>
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Column="0" Grid.Row="1"  Margin="5">
+                        <ListView x:Name="answersList"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>   
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Grid.Column="0" Margin="0 2 2 0"/>
+                                <TextBlock Grid.Column="1" Name="WatermarkAnswer"  Margin="2 1" Text="Вариант 1" Foreground="{StaticResource brushWatermarkForeground}" Visibility="Visible"/>
+                                <TextBox Grid.Column="1" Name="answerUserEntry" MinHeight="20" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" TextChanged="answerUserEntry_TextChanged"/>
+                            </Grid>
+                        </ListView>
+                        <Button x:Name="AddAnswer" MinHeight="30">
+                            <TextBlock>Добавить вариант</TextBlock>
+                        </Button>
+                    </StackPanel>
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Отметьте правильные ответы слева от варианта</TextBlock>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </GroupBox>
+    </StackPanel>
+</Window>
