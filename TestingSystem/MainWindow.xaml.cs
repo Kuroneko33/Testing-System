@@ -48,15 +48,41 @@ namespace TestingSystem
         private void answerUserEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
+            TextBlock textBlock = new TextBlock();
+
+            for (int i = 0; i < answersList.Items.Count; i++)
+            {
+                if (answersList.Items[i] is Grid grid)
+                {
+                    if (textBox.Equals((TextBox)grid.Children[2]))
+                    {
+                        textBlock = (TextBlock)grid.Children[1];
+                    }
+                }
+            }
 
             if (textBox.Text.Length != 0)
             {
-                WatermarkAnswer.Visibility = Visibility.Hidden;
+                textBlock.Visibility = Visibility.Hidden;
             }
             else
             {
-                WatermarkAnswer.Visibility = Visibility.Visible;
+                textBlock.Visibility = Visibility.Visible;
             }
+        }
+
+        private void AddAnswer_Click(object sender, RoutedEventArgs e)
+        {
+            answersList.Items.Add(new TextBlock().Text = "test");
+            Grid grid = (Grid)answersList.Items[0];
+            CheckBox checkBox = (CheckBox)grid.Children[0];
+            checkBox.IsChecked = false;
+            TextBox textBox = (TextBox)grid.Children[2];
+            textBox.Text = "test";
+
+            Grid grid1 = (Grid)answersList.Items[1];
+            TextBox textBox1 = (TextBox)grid1.Children[2];
+            textBox1.Text = "test";
         }
     }
 }

@@ -14,53 +14,113 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
+        <Style
+         x:Key="StretchedContainerStyle"
+        TargetType="{x:Type ListBoxItem}">
+            <Setter
+           Property="HorizontalContentAlignment"
+           Value="Stretch" />
+        </Style>
+        <DataTemplate x:Key="questionTemplat">
+
+        </DataTemplate>
     </Window.Resources>
     <StackPanel>
-        <GroupBox Header="Редактирование вопроса" Padding="5">
+        <GroupBox Header="Редактирование теста" Padding="5">
             <ScrollViewer>
-                <Grid ShowGridLines="True">
+                <Grid ShowGridLines="False">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition ></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
-                        <Grid Grid.Row="0" Background="{StaticResource brushWatermarkBackground}" Style="{StaticResource EntryFieldStyle}" >
-                            <TextBlock Name="WatermarkTextBlock" Margin="2 1" Text="Вопрос" Foreground="{StaticResource brushWatermarkForeground}" Visibility="Visible" />
-                            <TextBox Name="txtUserEntry" MinHeight="20" TextWrapping="Wrap" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" TextChanged="txtUserEntry_TextChanged" />
-                        </Grid>
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="5">
-                        <ComboBox Height="20" VerticalAlignment="Top" SelectionChanged="ComboBox_Selected">
-                            <ComboBoxItem IsSelected="True">
-                                <TextBlock>Один из списка</TextBlock>
-                            </ComboBoxItem>
-                            <TextBlock>Несколько из списка</TextBlock>
-                            <TextBlock>Сопоставление</TextBlock>
-                            <TextBlock>Порядок</TextBlock>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Grid.Column="0" Grid.Row="1"  Margin="5">
-                        <ListView x:Name="answersList"  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <Grid >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="auto"></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>   
-                                </Grid.ColumnDefinitions>
-                                <CheckBox Grid.Column="0" Margin="0 2 2 0"/>
-                                <TextBlock Grid.Column="1" Name="WatermarkAnswer"  Margin="2 1" Text="Вариант 1" Foreground="{StaticResource brushWatermarkForeground}" Visibility="Visible"/>
-                                <TextBox Grid.Column="1" Name="answerUserEntry" MinHeight="20" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" TextChanged="answerUserEntry_TextChanged"/>
+                    <ListBox ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  Grid.Row="0">
+                        <Grid ShowGridLines="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="5">
+                                <Grid Grid.Row="0" Background="{StaticResource brushWatermarkBackground}" Style="{StaticResource EntryFieldStyle}" >
+                                    <TextBlock Name="WatermarkTextBlock" Margin="2 1" Text="Вопрос" Foreground="{StaticResource brushWatermarkForeground}" Visibility="Visible" />
+                                    <TextBox Name="txtUserEntry" MinHeight="20" TextWrapping="Wrap" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" TextChanged="txtUserEntry_TextChanged" />
+                                </Grid>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="5">
+                                <ComboBox Height="20" VerticalAlignment="Top" SelectionChanged="ComboBox_Selected">
+                                    <ComboBoxItem IsSelected="True">
+                                        <TextBlock>Один из списка</TextBlock>
+                                    </ComboBoxItem>
+                                    <TextBlock>Несколько из списка</TextBlock>
+                                    <TextBlock>Сопоставление</TextBlock>
+                                    <TextBlock>Порядок</TextBlock>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="0" Grid.Row="1"  Margin="5">
+                                <ListBox x:Name="answersList" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox Grid.Column="0" Margin="0 2 2 0"/>
+                                        <TextBlock Grid.Column="1" Margin="2 1" Text="Вариант 1" Foreground="{StaticResource brushWatermarkForeground}" Visibility="Visible"/>
+                                        <TextBox Grid.Column="1" MinHeight="20" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" TextChanged="answerUserEntry_TextChanged"/>
+                                        <Button Grid.Column="2" Height="20">
+                                            <TextBlock  FontSize="12" Text=" X "></TextBlock>
+                                        </Button>
+                                    </Grid>
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition Width="auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <CheckBox Grid.Column="0" Margin="0 2 2 0"/>
+                                        <TextBlock Grid.Column="1" Margin="2 1" Text="Вариант 2" Foreground="{StaticResource brushWatermarkForeground}" Visibility="Visible"/>
+                                        <TextBox Grid.Column="1" MinHeight="20" Background="Transparent" BorderBrush="{StaticResource brushWatermarkBorder}" TextChanged="answerUserEntry_TextChanged"/>
+                                        <Button Grid.Column="2" Height="20">
+                                            <TextBlock  FontSize="12" Text=" X "></TextBlock>
+                                        </Button>
+                                    </Grid>
+                                </ListBox>
+                                <DockPanel Margin="0 10 0 0" LastChildFill="True">
+                                    <Button x:Name="AddAnswer" MinHeight="30" DockPanel.Dock="Left" Click="AddAnswer_Click">
+                                        <TextBlock Text="    Добавить вариант    "></TextBlock>
+                                    </Button>
+                                    <TextBlock Text="   Или   " VerticalAlignment="Center"></TextBlock>
+                                    <Button x:Name="AddAnswerOther" MinHeight="30" DockPanel.Dock="Right">
+                                        <TextBlock>Добавить вариант другое</TextBlock>
+                                    </Button>
+                                </DockPanel>
+                            </StackPanel>
+                            <Grid Grid.Column="1" Grid.Row="1">
+                                <TextBlock HorizontalAlignment="Center" Margin="10">Отметьте правильные ответы слева от варианта</TextBlock>
+                                <Button x:Name="Gotovo" Margin="5" MinHeight="30" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                                    <TextBlock Text="   Готово   "></TextBlock>
+                                </Button>
+                                <Button x:Name="DelQ" Margin="5" MinHeight="30" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                                    <TextBlock Text="   Удалить вопрос   "></TextBlock>
+                                </Button>
                             </Grid>
-                        </ListView>
-                        <Button x:Name="AddAnswer" MinHeight="30">
-                            <TextBlock>Добавить вариант</TextBlock>
+                        </Grid>
+                    </ListBox>
+                    <Grid  Grid.Row="1" ShowGridLines="False">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Grid.ColumnSpan="2" MinHeight="30" Margin="20" >
+                            <TextBlock FontSize="20">Добавить вопрос</TextBlock>
                         </Button>
-                    </StackPanel>
-                    <Grid Grid.Column="1" Grid.Row="1">
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center">Отметьте правильные ответы слева от варианта</TextBlock>
+                        <Button Grid.Column="3" MinHeight="30" Margin="20" >
+                            <TextBlock FontSize="20">Сохранить тест</TextBlock>
+                        </Button>
                     </Grid>
                 </Grid>
             </ScrollViewer>
