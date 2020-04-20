@@ -231,20 +231,34 @@ namespace TestingSystem
             dockButtons.Children.Add(addOther);
             DockPanel.SetDock(addOther, Dock.Right);
 
-            /*
-             <Button x:Name="AddAnswer" MinHeight="30" DockPanel.Dock="Left" Click="AddAnswer_Click">
-                <TextBlock Text="    Добавить вариант    "></TextBlock>
-              </Button>
-              <TextBlock Text="   Или   " VerticalAlignment="Center"></TextBlock>
-              <Button x:Name="AddAnswerOther" MinHeight="30" DockPanel.Dock="Right">
-                <TextBlock>Добавить вариант другое</TextBlock>
-              </Button>
-             */
-
             stackPanelA.Children.Add(answersList);
             stackPanelA.Children.Add(dockButtons);
             grid.Children.Add(stackPanelA);
             Grid.SetRow(stackPanelA, 1);
+
+            Grid rightGrid = new Grid();
+            Grid.SetRow(rightGrid, 1);
+            Grid.SetColumn(rightGrid, 1);
+
+            if (true)
+            {
+                rightGrid.Children.Add(new TextBlock() { Text = "Отметьте правильные ответы \nслева от варианта", Margin = new Thickness(10, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, FontSize = 20 });
+            }
+
+            Button delQ = new Button();
+            delQ.Height = 30;
+            delQ.Margin = new Thickness(5);
+            delQ.VerticalAlignment = VerticalAlignment.Bottom;
+            delQ.HorizontalAlignment = HorizontalAlignment.Right;
+            TextBlock delQtext = new TextBlock();
+            delQtext.FontSize = 12;
+            delQtext.Text = "   Удалить вопрос   ";
+            delQ.Content = delQtext;
+            rightGrid.Children.Add(delQ);
+
+            grid.Children.Add(rightGrid);
+
+
             QListbox.Items.Add(grid);
         }
     }
