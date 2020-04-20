@@ -159,7 +159,7 @@ namespace TestingSystem
             stackPanelA.Margin = new Thickness(5);
 
             ListBox answersList = new ListBox();
-            answersList.HorizontalAlignment = HorizontalAlignment.Stretch;
+            answersList.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             answersList.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
 
             Grid aGrid = new Grid();
@@ -184,16 +184,65 @@ namespace TestingSystem
                 textBox1.BorderBrush = brushWatermarkBorder;
                 textBox1.TextChanged += answerUserEntry_TextChanged;
 
+                Button del = new Button();
+                del.Height = 20;
+                del.Margin = new Thickness(5, 0, 0, 0);
+                TextBlock deltext = new TextBlock();
+                deltext.FontSize = 12;
+                deltext.Text = " X ";
+                del.Content = deltext;
+
                 aGrid.Children.Add(checkBox);
                 aGrid.Children.Add(textBlock1);
                 Grid.SetColumn(textBlock1, 1);
                 aGrid.Children.Add(textBox1);
                 Grid.SetColumn(textBox1, 1);
+                aGrid.Children.Add(del);
+                Grid.SetColumn(del, 2);
             }
 
             answersList.Items.Add(aGrid);
+
             
+
+            DockPanel dockButtons = new DockPanel();
+
+            Button add = new Button();
+            add.Height = 20;
+            add.Margin = new Thickness(0, 10, 0, 0);
+            TextBlock addtext = new TextBlock();
+            addtext.FontSize = 12;
+            addtext.Text = "    Добавить вариант    ";
+            add.Content = addtext;
+
+            dockButtons.Children.Add(add);
+            DockPanel.SetDock(add, Dock.Left);
+
+            dockButtons.Children.Add(new TextBlock() { Text = "   Или   ", Margin = new Thickness(0, 10, 0, 0)});
+
+            Button addOther = new Button();
+            addOther.Height = 20;
+            addOther.Margin = new Thickness(0, 10, 0, 0);
+            TextBlock addOthertext = new TextBlock();
+            addOthertext.FontSize = 12;
+            addOthertext.Text = "Добавить вариант другое";
+            addOther.Content = addOthertext;
+
+            dockButtons.Children.Add(addOther);
+            DockPanel.SetDock(addOther, Dock.Right);
+
+            /*
+             <Button x:Name="AddAnswer" MinHeight="30" DockPanel.Dock="Left" Click="AddAnswer_Click">
+                <TextBlock Text="    Добавить вариант    "></TextBlock>
+              </Button>
+              <TextBlock Text="   Или   " VerticalAlignment="Center"></TextBlock>
+              <Button x:Name="AddAnswerOther" MinHeight="30" DockPanel.Dock="Right">
+                <TextBlock>Добавить вариант другое</TextBlock>
+              </Button>
+             */
+
             stackPanelA.Children.Add(answersList);
+            stackPanelA.Children.Add(dockButtons);
             grid.Children.Add(stackPanelA);
             Grid.SetRow(stackPanelA, 1);
             QListbox.Items.Add(grid);

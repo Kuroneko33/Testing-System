@@ -21,21 +21,18 @@
            Property="HorizontalContentAlignment"
            Value="Stretch" />
         </Style>
-        <DataTemplate x:Key="questionTemplat">
-
-        </DataTemplate>
     </Window.Resources>
     <Grid>
         <GroupBox Header="Редактирование теста" Padding="5">
-            <ScrollViewer>
+            <ScrollViewer Foreground="Black">
                 <StackPanel>
                     <Grid ShowGridLines="False">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
-                        <ListBox x:Name="QListbox" ItemContainerStyle="{StaticResource StretchedContainerStyle}"  Grid.Row="0">
-                        
+                        <ListBox x:Name="QListbox" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0">
+                               
                         </ListBox>
                         <Grid  Grid.Row="1" ShowGridLines="False">
                             <Grid.ColumnDefinitions>
