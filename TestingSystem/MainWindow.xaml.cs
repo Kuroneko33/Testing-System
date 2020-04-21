@@ -21,12 +21,17 @@ namespace TestingSystem
     /// </summary>
     public partial class MainWindow : Window
     {
+        SolidColorBrush brushWatermarkBackground = new SolidColorBrush(Colors.White);
+        SolidColorBrush brushWatermarkForeground = new SolidColorBrush(Colors.LightSteelBlue);
+        SolidColorBrush brushWatermarkBorder = new SolidColorBrush(Colors.Indigo);
+        SolidColorBrush transparent = new SolidColorBrush(Colors.White);
         public ObservableCollection<int> ints { get; set; }
+
         public MainWindow()
         {
             InitializeComponent();
         }
-
+        
         private void txtUserEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
@@ -99,18 +104,123 @@ namespace TestingSystem
             }
         }
 
+
+
+        private void DelAnswer_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            for (int i = 0; i < QListbox.Items.Count; i++)
+            {
+                if (QListbox.Items[i] is Grid grid)
+                {
+                    if (grid.Children[1] is StackPanel stackPanel)
+                    {
+                        if (stackPanel.Children[0] is ListBox listBox)
+                        {
+                            for (int j = 0; j < listBox.Items.Count; j++)
+                            {
+                                if (listBox.Items[j] is Grid aGrid)
+                                {
+                                    if (button.Equals((Button)aGrid.Children[3]))
+                                    {
+                                        listBox.Items.RemoveAt(j);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         private void AddAnswer_Click(object sender, RoutedEventArgs e)
         {
-            /*answersList.Items.Add(new TextBlock().Text = "test");
-            Grid grid = (Grid)answersList.Items[0];
-            CheckBox checkBox = (CheckBox)grid.Children[0];
-            checkBox.IsChecked = false;
-            TextBox textBox = (TextBox)grid.Children[2];
-            textBox.Text = "test";
+            Button button = (Button)sender;
+            for (int i = 0; i < QListbox.Items.Count; i++)
+            {
+                if (QListbox.Items[i] is Grid grid)
+                {
+                    if (grid.Children[1] is StackPanel stackPanel)
+                    {
+                        if (stackPanel.Children[1] is DockPanel dockPanel)
+                        {
+                            if (dockPanel.Children[0] is Button button1)
+                            {
+                                if (button.Equals(button1))
+                                {
+                                    if (stackPanel.Children[0] is ListBox listBox)
+                                    {
+                                        listBox.Items.Add(AddCheckboxAnswer());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-            Grid grid1 = (Grid)answersList.Items[1];
-            TextBox textBox1 = (TextBox)grid1.Children[2];
-            textBox1.Text = "test";*/
+        private Grid AddCheckboxAnswer()
+        {
+            Grid aGrid = new Grid();
+            aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            aGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+
+            CheckBox checkBox = new CheckBox();
+            checkBox.Margin = new Thickness(0, 2, 2, 0);
+
+            TextBlock textBlock1 = new TextBlock();
+            textBlock1.Margin = new Thickness(2, 1, 0, 0);
+            textBlock1.Text = "Вариант ответа";
+            textBlock1.Foreground = brushWatermarkForeground;
+            textBlock1.MinHeight = 20;
+
+            TextBox textBox1 = new TextBox();
+            textBox1.Background = transparent;
+            textBox1.BorderBrush = brushWatermarkBorder;
+            textBox1.TextChanged += answerUserEntry_TextChanged;
+
+            Button del = new Button();
+            del.Height = 20;
+            del.Margin = new Thickness(5, 0, 0, 0);
+            del.Click += DelAnswer_Click;
+            TextBlock deltext = new TextBlock();
+            deltext.FontSize = 12;
+            deltext.Text = " X ";
+            del.Content = deltext;
+
+            aGrid.Children.Add(checkBox);
+            aGrid.Children.Add(textBlock1);
+            Grid.SetColumn(textBlock1, 1);
+            aGrid.Children.Add(textBox1);
+            Grid.SetColumn(textBox1, 1);
+            aGrid.Children.Add(del);
+            Grid.SetColumn(del, 2);
+
+            return aGrid;
+        }
+
+        private void DelqButton(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            for (int i = 0; i < QListbox.Items.Count; i++)
+            {
+                if (QListbox.Items[i] is Grid grid)
+                {
+                    if (grid.Children[2] is Grid rightGrid)
+                    {
+                        if (rightGrid.Children[1] is Button button1)
+                        {
+                            if (button.Equals((Button)button1))
+                            {
+                                QListbox.Items.RemoveAt(i);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -125,10 +235,7 @@ namespace TestingSystem
             stackPanelQ.Margin = new Thickness(5);
 
             Grid stackPanelQGrid = new Grid();
-            SolidColorBrush brushWatermarkBackground = new SolidColorBrush(Colors.White);
-            SolidColorBrush brushWatermarkForeground = new SolidColorBrush(Colors.LightSteelBlue);
-            SolidColorBrush brushWatermarkBorder = new SolidColorBrush(Colors.Indigo);
-            SolidColorBrush transparent = new SolidColorBrush(Colors.White);
+            
             transparent.Opacity = 0;
             stackPanelQGrid.Background = brushWatermarkBackground;
 
@@ -162,54 +269,23 @@ namespace TestingSystem
             answersList.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             answersList.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
 
-            Grid aGrid = new Grid();
-            aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            aGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            
 
             ////////////////
             if (true)
             {
-                CheckBox checkBox = new CheckBox();
-                checkBox.Margin = new Thickness(0, 2, 2, 0);
-
-                TextBlock textBlock1 = new TextBlock();
-                textBlock1.Margin = new Thickness(2, 1, 0, 0);
-                textBlock1.Text = "Вариант ответа";
-                textBlock1.Foreground = brushWatermarkForeground;
-                textBlock1.MinHeight = 20;
-
-                TextBox textBox1 = new TextBox();
-                textBox1.Background = transparent;
-                textBox1.BorderBrush = brushWatermarkBorder;
-                textBox1.TextChanged += answerUserEntry_TextChanged;
-
-                Button del = new Button();
-                del.Height = 20;
-                del.Margin = new Thickness(5, 0, 0, 0);
-                TextBlock deltext = new TextBlock();
-                deltext.FontSize = 12;
-                deltext.Text = " X ";
-                del.Content = deltext;
-
-                aGrid.Children.Add(checkBox);
-                aGrid.Children.Add(textBlock1);
-                Grid.SetColumn(textBlock1, 1);
-                aGrid.Children.Add(textBox1);
-                Grid.SetColumn(textBox1, 1);
-                aGrid.Children.Add(del);
-                Grid.SetColumn(del, 2);
+                Grid aGrid = AddCheckboxAnswer();
+                answersList.Items.Add(aGrid);
             }
 
-            answersList.Items.Add(aGrid);
 
-            
 
             DockPanel dockButtons = new DockPanel();
 
             Button add = new Button();
             add.Height = 20;
             add.Margin = new Thickness(0, 10, 0, 0);
+            add.Click += AddAnswer_Click;
             TextBlock addtext = new TextBlock();
             addtext.FontSize = 12;
             addtext.Text = "    Добавить вариант    ";
@@ -250,6 +326,7 @@ namespace TestingSystem
             delQ.Margin = new Thickness(5);
             delQ.VerticalAlignment = VerticalAlignment.Bottom;
             delQ.HorizontalAlignment = HorizontalAlignment.Right;
+            delQ.Click += DelqButton;
             TextBlock delQtext = new TextBlock();
             delQtext.FontSize = 12;
             delQtext.Text = "   Удалить вопрос   ";
