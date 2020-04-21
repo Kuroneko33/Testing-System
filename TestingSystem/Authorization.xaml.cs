@@ -107,6 +107,7 @@ namespace TestingSystem
             }
             else if (RBStudent.IsChecked.Value == true)
             {
+                new StudentTestSelect().Show();
                 this.Close();
             }
             //Обработка авторизации и запуск соответствующих форм

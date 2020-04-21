@@ -1,0 +1,21 @@
+﻿<Window x:Class="TestingSystem.StudentTestSelect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestingSystem"
+        mc:Ignorable="d"
+        Title="StudentTestSelect" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <ScrollViewer Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
+            <StackPanel>
+                <ListBox x:Name="TestsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                    <TextBlock FontSize="25" Margin="5">Типа тест</TextBlock>
+                    <TextBlock FontSize="25" Margin="5">Типа тест 2</TextBlock>
+                </ListBox>
+                <Button x:Name="ReloadTest" Click="ReloadTest_Click"  Margin="10" Content="Обновить" FontSize="20"></Button>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

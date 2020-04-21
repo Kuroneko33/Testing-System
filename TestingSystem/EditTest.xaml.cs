@@ -484,7 +484,32 @@ namespace TestingSystem
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            TestsList.Items.Add(TestName.Text);
+            Grid grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            TextBlock nameTextBlock = new TextBlock();
+            nameTextBlock.FontSize = 20;
+            nameTextBlock.TextWrapping = TextWrapping.Wrap;
+            nameTextBlock.Text = "Тест: " + TestName.Text;
+            nameTextBlock.Margin = new Thickness(10);
+            Grid.SetColumn(nameTextBlock, 0);
+            Grid.SetColumnSpan(nameTextBlock, 4);
+            grid.Children.Add(nameTextBlock);
+            TextBlock statusTextBlock = new TextBlock();
+            statusTextBlock.FontSize = 20;
+            statusTextBlock.Text = "Закрыт";
+            statusTextBlock.Foreground = new SolidColorBrush(Colors.Red);
+            statusTextBlock.Opacity = 0.8;
+            statusTextBlock.HorizontalAlignment = HorizontalAlignment.Right;
+            statusTextBlock.VerticalAlignment = VerticalAlignment.Center;
+            statusTextBlock.Margin = new Thickness(10);
+            Grid.SetColumn(statusTextBlock, 4);
+            grid.Children.Add(statusTextBlock);
+            TestsList.Items.Add(grid);
             this.Close();
         }
     }

@@ -10,9 +10,25 @@
     <Grid>
         <ScrollViewer Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
             <StackPanel>
-                <ListBox x:Name="TestsListBox" x:FieldModifier="public">
+                <ListBox x:Name="TestsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
 
                 </ListBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Foreground="Green" x:Name="OpenTest" Click="OpenTest_Click" Grid.Column ="0"  Margin="10" Content="Открыть тест" FontSize="20"></Button>
+                    <Button Foreground="Red" x:Name="CloseTest" Click="CloseTest_Click" Grid.Column ="1" Margin="10" Content="Закрыть тест" FontSize="20"></Button>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button Foreground="LightSteelBlue" x:Name="EditTest" Click="EditTest_Click" Grid.Column ="0" Margin="10" Content="Редактировать тест" FontSize="20" ></Button>
+                    <Button Foreground="Firebrick"  x:Name="DeleteTest" Click="DeleteTest_Click" Grid.Column ="1" Margin="10" Content="Удалить тест" FontSize="20" ></Button>
+                </Grid>
                 <Button x:Name="AddTest" Click="AddTest_Click"  Margin="10" Content="Добавить тест" FontSize="20"></Button>
             </StackPanel>
         </ScrollViewer>

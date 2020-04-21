@@ -19,7 +19,7 @@ namespace TestingSystem
     /// </summary>
     public partial class TeacherTestsEditor : Window
     {
-        public ListBox TestsList = new ListBox(); 
+        public ListBox TestsList = new ListBox();
         public TeacherTestsEditor()
         {
             InitializeComponent();
@@ -28,7 +28,50 @@ namespace TestingSystem
 
         private void AddTest_Click(object sender, RoutedEventArgs e)
         {
-            new EditTest(TestsList) {Owner = this}.Show();
+            new EditTest(TestsList) { Owner = this }.Show();
+        }
+
+        private void OpenTest_Click(object sender, RoutedEventArgs e)
+        {
+            if (TestsListBox.SelectedIndex >= 0)
+            {
+                if (TestsListBox.Items[TestsListBox.SelectedIndex] is Grid grid)
+                {
+                    if (grid.Children[1] is TextBlock textBlock)
+                    {
+                        textBlock.Text = "Открыт";
+                        textBlock.Foreground = new SolidColorBrush(Colors.Green);
+                    }
+                }
+            }
+        }
+
+        private void CloseTest_Click(object sender, RoutedEventArgs e)
+        {
+            if (TestsListBox.SelectedIndex >= 0)
+            {
+                if (TestsListBox.Items[TestsListBox.SelectedIndex] is Grid grid)
+                {
+                    if (grid.Children[1] is TextBlock textBlock)
+                    {
+                        textBlock.Text = "Закрыт";
+                        textBlock.Foreground = new SolidColorBrush(Colors.Red);
+                    }
+                }
+            }
+        }
+
+        private void EditTest_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DeleteTest_Click(object sender, RoutedEventArgs e)
+        {
+            if (TestsListBox.SelectedIndex >= 0)
+            {
+                TestsList.Items.RemoveAt(TestsListBox.SelectedIndex);
+            }
         }
     }
 }
