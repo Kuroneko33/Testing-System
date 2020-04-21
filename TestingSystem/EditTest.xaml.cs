@@ -17,22 +17,24 @@ using System.Windows.Shapes;
 namespace TestingSystem
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for EditTest.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class EditTest : Window
     {
         SolidColorBrush brushWatermarkBackground = new SolidColorBrush(Colors.White);
         SolidColorBrush brushWatermarkForeground = new SolidColorBrush(Colors.LightSteelBlue);
         SolidColorBrush brushWatermarkBorder = new SolidColorBrush(Colors.Indigo);
         SolidColorBrush transparent = new SolidColorBrush(Colors.White);
+        int radioIndex = 0;
         public ObservableCollection<int> ints { get; set; }
-
-        public MainWindow()
+        public ListBox TestsList = new ListBox();
+        public EditTest(ListBox TestsListbox)
         {
             InitializeComponent();
+            TestsList = TestsListbox;
         }
         
-        private void txtUserEntry_TextChanged(object sender, TextChangedEventArgs e)
+        private void TxtUserEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
             for (int i = 0; i < QListbox.Items.Count; i++)
@@ -62,13 +64,7 @@ namespace TestingSystem
             }
         }
 
-
-        private void ComboBox_Selected(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void answerUserEntry_TextChanged(object sender, TextChangedEventArgs e)
+        private void AnswerUserEntry_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
             for (int i = 0; i < QListbox.Items.Count; i++)
@@ -104,7 +100,22 @@ namespace TestingSystem
             }
         }
 
+        private void TestName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (TestName.Text.Length != 0)
+            {
+                TestNameWatermark.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                TestNameWatermark.Visibility = Visibility.Visible;
+            }
+        }
 
+        private void ComboBox_Selected(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
 
         private void DelAnswer_Click(object sender, RoutedEventArgs e)
         {
@@ -137,6 +148,9 @@ namespace TestingSystem
         private void AddAnswer_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
+            Button pressedButton1 = new Button();
+            Button pressedButton2 = new Button();
+            int mode = -1;
             for (int i = 0; i < QListbox.Items.Count; i++)
             {
                 if (QListbox.Items[i] is Grid grid)
@@ -147,11 +161,51 @@ namespace TestingSystem
                         {
                             if (dockPanel.Children[0] is Button button1)
                             {
-                                if (button.Equals(button1))
+                                pressedButton1 = button1;
+                            }
+                            if (dockPanel.Children[2] is Button button2)
+                            {
+                                pressedButton2 = button2;
+                            }
+                            if (button.Equals(pressedButton1))
+                            {
+                                mode = 1;
+                            }
+                            else if (button.Equals(pressedButton2))
+                            {
+                                mode = 0;
+                            }
+                            if (mode != -1)
+                            {
+                                if (stackPanel.Children[0] is ListBox listBox)
                                 {
-                                    if (stackPanel.Children[0] is ListBox listBox)
+                                    if (grid.Children[2] is Grid rightGrid)
                                     {
-                                        listBox.Items.Add(AddCheckboxAnswer());
+                                        if (rightGrid.Children[0] is TextBlock rightTextBlock)
+                                        {
+                                            if (rightTextBlock.Text[0].Equals('О'))
+                                            {
+                                                if (listBox.Items.Count > 0)
+                                                {
+                                                    if (listBox.Items[0] is Grid answerGrid)
+                                                    {
+                                                        if (answerGrid.Children[0] is RadioButton rb)
+                                                        {
+                                                            listBox.Items.Add(AddRadioAnswer(rb.GroupName, mode));
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    listBox.Items.Add(AddRadioAnswer(radioIndex.ToString(), mode));
+                                                    radioIndex++;
+                                                }
+                                            }
+                                            else if (rightTextBlock.Text[0].Equals('Н'))
+                                            {
+                                                listBox.Items.Add(AddCheckboxAnswer(mode));
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -161,7 +215,7 @@ namespace TestingSystem
             }
         }
 
-        private Grid AddCheckboxAnswer()
+        private Grid AddCheckboxAnswer(int mode)
         {
             Grid aGrid = new Grid();
             aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
@@ -173,14 +227,23 @@ namespace TestingSystem
 
             TextBlock textBlock1 = new TextBlock();
             textBlock1.Margin = new Thickness(2, 1, 0, 0);
-            textBlock1.Text = "Вариант ответа";
+            if (mode == 1)
+            {
+                textBlock1.Text = "Вариант ответа";
+            }
+            else
+            {
+                textBlock1.Text = "Другое";
+            }
             textBlock1.Foreground = brushWatermarkForeground;
             textBlock1.MinHeight = 20;
 
             TextBox textBox1 = new TextBox();
             textBox1.Background = transparent;
             textBox1.BorderBrush = brushWatermarkBorder;
-            textBox1.TextChanged += answerUserEntry_TextChanged;
+            textBox1.TextChanged += AnswerUserEntry_TextChanged;
+
+            
 
             Button del = new Button();
             del.Height = 20;
@@ -201,6 +264,58 @@ namespace TestingSystem
 
             return aGrid;
         }
+
+        private Grid AddRadioAnswer(string group, int mode)
+        {
+            Grid aGrid = new Grid();
+            aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            aGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+
+            RadioButton radioButton = new RadioButton();
+            radioButton.Margin = new Thickness(0, 2, 2, 0);
+                
+            
+            radioButton.GroupName = group;
+
+            TextBlock textBlock1 = new TextBlock();
+            textBlock1.Margin = new Thickness(2, 1, 0, 0);
+            if (mode == 1)
+            {
+                textBlock1.Text = "Вариант ответа";
+            }
+            else
+            {
+                textBlock1.Text = "Другое";
+            }
+            textBlock1.Foreground = brushWatermarkForeground;
+            textBlock1.MinHeight = 20;
+
+            TextBox textBox1 = new TextBox();
+            textBox1.Background = transparent;
+            textBox1.BorderBrush = brushWatermarkBorder;
+            textBox1.TextChanged += AnswerUserEntry_TextChanged;
+
+            Button del = new Button();
+            del.Height = 20;
+            del.Margin = new Thickness(5, 0, 0, 0);
+            del.Click += DelAnswer_Click;
+            TextBlock deltext = new TextBlock();
+            deltext.FontSize = 12;
+            deltext.Text = " X ";
+            del.Content = deltext;
+
+            aGrid.Children.Add(radioButton);
+            aGrid.Children.Add(textBlock1);
+            Grid.SetColumn(textBlock1, 1);
+            aGrid.Children.Add(textBox1);
+            Grid.SetColumn(textBox1, 1);
+            aGrid.Children.Add(del);
+            Grid.SetColumn(del, 2);
+
+            return aGrid;
+        }
+
 
         private void DelqButton(object sender, RoutedEventArgs e)
         {
@@ -223,13 +338,26 @@ namespace TestingSystem
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void AddQ_Click(object sender, RoutedEventArgs e)
         {
             Grid grid = new Grid();
             grid.RowDefinitions.Add(new RowDefinition());
             grid.RowDefinitions.Add(new RowDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
+
+            Grid rightGrid = new Grid();
+            Grid.SetRowSpan(rightGrid, 2);
+            Grid.SetColumn(rightGrid, 1);
+
+            if (QType.SelectedIndex == 0)
+            {
+                rightGrid.Children.Add(new TextBlock() { Text = "Один из списка\n\nОтметьте правильный ответ \nслева от варианта", Margin = new Thickness(10, 0, 10, 0), HorizontalAlignment = HorizontalAlignment.Left, FontSize = 15 });
+            }
+            else if (QType.SelectedIndex == 1)
+            {
+                rightGrid.Children.Add(new TextBlock() { Text = "Несколько из списка\n\nОтметьте правильные ответы \nслева от варианта", Margin = new Thickness(10, 0, 10, 0), HorizontalAlignment = HorizontalAlignment.Left, FontSize = 15 });
+            }
 
             StackPanel stackPanelQ = new StackPanel();
             stackPanelQ.Margin = new Thickness(5);
@@ -255,7 +383,7 @@ namespace TestingSystem
             textBox.TextWrapping = TextWrapping.Wrap;
             textBox.Background = transparent;
             textBox.BorderBrush = brushWatermarkBorder;
-            textBox.TextChanged += txtUserEntry_TextChanged;
+            textBox.TextChanged += TxtUserEntry_TextChanged;
 
             stackPanelQGrid.Children.Add(textBlock);
             stackPanelQGrid.Children.Add(textBox);
@@ -269,14 +397,35 @@ namespace TestingSystem
             answersList.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             answersList.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
 
-            
+
 
             ////////////////
-            if (true)
+            if (rightGrid.Children[0] is TextBlock rightTextBlock)
             {
-                Grid aGrid = AddCheckboxAnswer();
-                answersList.Items.Add(aGrid);
+                if (rightTextBlock.Text[0].Equals('О'))
+                {
+                    if (answersList.Items.Count > 0)
+                    {
+                        if (answersList.Items[0] is Grid answerGrid)
+                        {
+                            if (answerGrid.Children[0] is RadioButton rb)
+                            {
+                                answersList.Items.Add(AddRadioAnswer(rb.GroupName,1));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        answersList.Items.Add(AddRadioAnswer(radioIndex.ToString(), 1));
+                        radioIndex++;
+                    }
+                }
+                else if (rightTextBlock.Text[0].Equals('Н'))
+                {
+                    answersList.Items.Add(AddCheckboxAnswer(1));
+                }
             }
+            
 
 
 
@@ -299,6 +448,7 @@ namespace TestingSystem
             Button addOther = new Button();
             addOther.Height = 20;
             addOther.Margin = new Thickness(0, 10, 0, 0);
+            addOther.Click += AddAnswer_Click;
             TextBlock addOthertext = new TextBlock();
             addOthertext.FontSize = 12;
             addOthertext.Text = "Добавить вариант другое";
@@ -312,14 +462,7 @@ namespace TestingSystem
             grid.Children.Add(stackPanelA);
             Grid.SetRow(stackPanelA, 1);
 
-            Grid rightGrid = new Grid();
-            Grid.SetRow(rightGrid, 1);
-            Grid.SetColumn(rightGrid, 1);
-
-            if (true)
-            {
-                rightGrid.Children.Add(new TextBlock() { Text = "Отметьте правильные ответы \nслева от варианта", Margin = new Thickness(10, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, FontSize = 20 });
-            }
+            
 
             Button delQ = new Button();
             delQ.Height = 30;
@@ -337,6 +480,12 @@ namespace TestingSystem
 
 
             QListbox.Items.Add(grid);
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            TestsList.Items.Add(TestName.Text);
+            this.Close();
         }
     }
 }

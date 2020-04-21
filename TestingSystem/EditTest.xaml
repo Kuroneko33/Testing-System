@@ -1,11 +1,12 @@
-﻿<Window x:Class="TestingSystem.MainWindow"
+﻿<Window x:Class="TestingSystem.EditTest"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TestingSystem"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" ResizeMode="CanResizeWithGrip">
+        Title="EditTest" Height="450" Width="800" ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <SolidColorBrush x:Key="brushWatermarkBackground" Color="White" />
         <SolidColorBrush x:Key="brushWatermarkForeground" Color="LightSteelBlue" />
@@ -26,6 +27,10 @@
         <GroupBox Header="Редактирование теста" Padding="5">
             <ScrollViewer>
                 <StackPanel>
+                    <Grid>
+                        <TextBlock x:Name="TestNameWatermark" Text="Название теста" Foreground="LightSteelBlue" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="10" FontSize="20"/>
+                        <TextBox TextChanged="TestName_TextChanged"  Background="Transparent" x:Name="TestName" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="10" FontSize="20"/>
+                    </Grid>
                     <Grid ShowGridLines="False">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -38,13 +43,24 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Grid.ColumnSpan="2" MinHeight="30" Margin="20" Click="Button_Click" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition></RowDefinition>
+                                <RowDefinition></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Button x:Name="AddQ" Grid.Column="0" MinHeight="30" Margin="20" Click="AddQ_Click" >
                                 <TextBlock FontSize="20">Добавить вопрос</TextBlock>
                             </Button>
-                            <Button Grid.Column="3" MinHeight="30" Margin="20" >
-                                <TextBlock FontSize="20">Сохранить тест</TextBlock>
+                            <ComboBox Name="QType" Grid.Column="1"  Margin="20" Height="30" VerticalAlignment="Center" SelectionChanged="ComboBox_Selected">
+                                <ComboBoxItem IsSelected="True">
+                                    <TextBlock FontSize="18">Один из списка</TextBlock>
+                                </ComboBoxItem>
+                                <TextBlock FontSize="18">Несколько из списка</TextBlock>
+                                <TextBlock FontSize="18" Foreground="{StaticResource brushWatermarkForeground}">Сопоставление</TextBlock>
+                                <TextBlock FontSize="18" Foreground="{StaticResource brushWatermarkForeground}">Порядок</TextBlock>
+                            </ComboBox>
+                            <Button x:Name="SaveButton" Click="SaveButton_Click" Grid.ColumnSpan="2" Grid.Row="1" MinHeight="30" Margin="20" >
+                                <TextBlock FontSize="20" Foreground="{StaticResource brushWatermarkForeground}">Сохранить тест</TextBlock>
                             </Button>
                         </Grid>
                     </Grid>
