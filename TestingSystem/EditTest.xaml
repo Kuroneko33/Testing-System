@@ -51,7 +51,7 @@
                             <Button x:Name="AddQ" Grid.Column="0" MinHeight="30" Margin="20" Click="AddQ_Click" >
                                 <TextBlock FontSize="20">Добавить вопрос</TextBlock>
                             </Button>
-                            <ComboBox Name="QType" Grid.Column="1"  Margin="20" Height="30" VerticalAlignment="Center" SelectionChanged="ComboBox_Selected">
+                            <ComboBox Name="QType" Grid.Column="1"  Margin="20" Height="30" VerticalAlignment="Center">
                                 <ComboBoxItem IsSelected="True">
                                     <TextBlock FontSize="18">Один из списка</TextBlock>
                                 </ComboBoxItem>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TestingSystem"
         mc:Ignorable="d"
         Title="TeacherTestsEditor" Height="450" Width="800"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Grid>
         <ScrollViewer Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
             <StackPanel>
@@ -26,7 +26,7 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button Foreground="LightSteelBlue" x:Name="EditTest" Click="EditTest_Click" Grid.Column ="0" Margin="10" Content="Редактировать тест" FontSize="20" ></Button>
+                    <Button x:Name="EditTest" Click="EditTest_Click" Grid.Column ="0" Margin="10" Content="Редактировать тест" FontSize="20" ></Button>
                     <Button Foreground="Firebrick"  x:Name="DeleteTest" Click="DeleteTest_Click" Grid.Column ="1" Margin="10" Content="Удалить тест" FontSize="20" ></Button>
                 </Grid>
                 <Button x:Name="AddTest" Click="AddTest_Click"  Margin="10" Content="Добавить тест" FontSize="20"></Button>

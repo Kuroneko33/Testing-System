@@ -117,9 +117,121 @@ namespace TestingSystem
             }
         }
 
-        private void ComboBox_Selected(object sender, SelectionChangedEventArgs e)
+        public async Task LoadTest(string testName)
         {
+            //Открытие подключения
+            await sqlConnection.OpenAsync();
 
+            //Чтение id добавленного ТЕСТА в базе данных для удаления ВОПРОСОВ
+            SqlDataReader dataReader = null;
+            SqlCommand sqlCommandSELECT = new SqlCommand($"SELECT * From [Tests] WHERE Name=N'{testName}'", sqlConnection);
+            try
+            {
+                dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                await dataReader.ReadAsync();
+                int Tests_id = Convert.ToInt32(dataReader["Id"]);
+                string Test_name = Convert.ToString(dataReader["Name"]);
+                TestName.Text = Test_name;
+                TestNameWatermark.Visibility = Visibility.Hidden;
+                dataReader.Close();
+
+                sqlCommandSELECT = new SqlCommand($"SELECT * FROM [Questions] WHERE Tests_id=N'{Tests_id}'", sqlConnection);
+                dataReader = null;
+                List<int> Questions_ids = new List<int>();
+                List<string> Questions_names = new List<string>();
+                List<string> Questions_types = new List<string>();
+                List<int> Questions_points = new List<int>();
+                try
+                {
+                    dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                    while (await dataReader.ReadAsync())
+                    {
+                        Questions_ids.Add(Convert.ToInt32(dataReader["Id"]));
+                        Questions_names.Add((String)(Convert.ToString(dataReader["Name"])).Trim(' '));
+                        Questions_types.Add((String)(Convert.ToString(dataReader["Type"])).Trim(' '));
+                        Questions_points.Add(Convert.ToInt32(dataReader["Points"]));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.Source, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    dataReader.Close();
+                }
+                //цикл добавления вопросов
+                for (int i = 0; i < Questions_ids.Count; i++)
+                {
+                    int QlistboxIndex = AddQuestion(Questions_types[i], false, Questions_names[i]);
+                    ListBox answersList = null;
+                    if (QListbox.Items[QlistboxIndex] is Grid grid)
+                    {
+                        if (grid.Children[1] is StackPanel stackPanel)
+                        {
+                            if (stackPanel.Children[1] is DockPanel dockPanel)
+                            {
+                                if (stackPanel.Children[0] is ListBox listBox)
+                                {
+                                    answersList = listBox;
+                                }
+                            }
+                        }
+                    }
+                    string Text = null;
+                    string Correctness = null;
+                    int Mode = -1; //1 - обычный вопрос, 0 - другое;
+
+                    //цикл добавления ответов для каждого вопроса
+                    sqlCommandSELECT = new SqlCommand($"SELECT * FROM [Answers] WHERE Questions_id=N'{Questions_ids[i]}'", sqlConnection);
+                    dataReader = null;
+                    try
+                    {
+                        dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                        while (await dataReader.ReadAsync())
+                        {
+                            Text = Convert.ToString(dataReader["Text"]);
+                            Correctness = (String)(Convert.ToString(dataReader["Correctness"])).Trim(' ');
+                            Mode = 1; //тут можно добавить считывание типа вопроса
+                            if (Questions_types[i].Equals("Radio"))
+                            {
+                                if (answersList.Items.Count > 0)
+                                {
+                                    if (answersList.Items[0] is Grid answerGrid)
+                                    {
+                                        if (answerGrid.Children[0] is RadioButton rb)
+                                        {
+                                            answersList.Items.Add(AddRadioAnswer(rb.GroupName, Mode, Text, Correctness));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    answersList.Items.Add(AddRadioAnswer(radioIndex.ToString(), Mode, Text, Correctness));
+                                    radioIndex++;
+                                }
+                            }
+                            else if (Questions_types[i].Equals("Checkbox"))
+                            {
+                                answersList.Items.Add(AddCheckboxAnswer(Mode, Text, Correctness));
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, ex.Source, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        dataReader.Close();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            sqlConnection.Close();
         }
 
         private void DelAnswer_Click(object sender, RoutedEventArgs e)
@@ -148,7 +260,6 @@ namespace TestingSystem
                 }
             }
         }
-
 
         private void AddAnswer_Click(object sender, RoutedEventArgs e)
         {
@@ -220,7 +331,7 @@ namespace TestingSystem
             }
         }
 
-        private Grid AddCheckboxAnswer(int mode)
+        private Grid AddCheckboxAnswer(int mode, string Text = "", string Correctness = "false")
         {
             Grid aGrid = new Grid();
             aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
@@ -229,6 +340,10 @@ namespace TestingSystem
 
             CheckBox checkBox = new CheckBox();
             checkBox.Margin = new Thickness(0, 2, 2, 0);
+            if (Correctness.Equals("true"))
+            {
+                checkBox.IsChecked = true;
+            }
 
             TextBlock textBlock1 = new TextBlock();
             textBlock1.Margin = new Thickness(2, 1, 0, 0);
@@ -242,13 +357,18 @@ namespace TestingSystem
             }
             textBlock1.Foreground = brushWatermarkForeground;
             textBlock1.MinHeight = 20;
+            if (!Text.Equals(""))
+            {
+                textBlock1.Visibility = Visibility.Hidden;
+            }
 
             TextBox textBox1 = new TextBox();
             textBox1.Background = transparent;
             textBox1.BorderBrush = brushWatermarkBorder;
+            textBox1.Text = Text;
             textBox1.TextChanged += AnswerUserEntry_TextChanged;
 
-            
+
 
             Button del = new Button();
             del.Height = 20;
@@ -270,7 +390,7 @@ namespace TestingSystem
             return aGrid;
         }
 
-        private Grid AddRadioAnswer(string group, int mode)
+        private Grid AddRadioAnswer(string group, int mode, string Text = "", string Correctness = "false")
         {
             Grid aGrid = new Grid();
             aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
@@ -279,9 +399,11 @@ namespace TestingSystem
 
             RadioButton radioButton = new RadioButton();
             radioButton.Margin = new Thickness(0, 2, 2, 0);
-                
-            
             radioButton.GroupName = group;
+            if (Correctness.Equals("true"))
+            {
+                radioButton.IsChecked = true;
+            }
 
             TextBlock textBlock1 = new TextBlock();
             textBlock1.Margin = new Thickness(2, 1, 0, 0);
@@ -295,11 +417,16 @@ namespace TestingSystem
             }
             textBlock1.Foreground = brushWatermarkForeground;
             textBlock1.MinHeight = 20;
+            if (!Text.Equals(""))
+            {
+                textBlock1.Visibility = Visibility.Hidden;
+            }
 
             TextBox textBox1 = new TextBox();
             textBox1.Background = transparent;
             textBox1.BorderBrush = brushWatermarkBorder;
             textBox1.TextChanged += AnswerUserEntry_TextChanged;
+            textBox1.Text = Text;
 
             Button del = new Button();
             del.Height = 20;
@@ -320,7 +447,6 @@ namespace TestingSystem
 
             return aGrid;
         }
-
 
         private void DelqButton(object sender, RoutedEventArgs e)
         {
@@ -343,7 +469,7 @@ namespace TestingSystem
             }
         }
 
-        private void AddQ_Click(object sender, RoutedEventArgs e)
+        private int AddQuestion(string type, bool addbutton = true, string Text = "")
         {
             Grid grid = new Grid();
             grid.RowDefinitions.Add(new RowDefinition());
@@ -355,11 +481,11 @@ namespace TestingSystem
             Grid.SetRowSpan(rightGrid, 2);
             Grid.SetColumn(rightGrid, 1);
 
-            if (QType.SelectedIndex == 0)
+            if (type.Equals("Radio"))
             {
                 rightGrid.Children.Add(new TextBlock() { Text = "Один из списка\n\nОтметьте правильный ответ \nслева от варианта", Margin = new Thickness(10, 0, 10, 0), HorizontalAlignment = HorizontalAlignment.Left, FontSize = 15 });
             }
-            else if (QType.SelectedIndex == 1)
+            else if (type.Equals("Checkbox"))
             {
                 rightGrid.Children.Add(new TextBlock() { Text = "Несколько из списка\n\nОтметьте правильные ответы \nслева от варианта", Margin = new Thickness(10, 0, 10, 0), HorizontalAlignment = HorizontalAlignment.Left, FontSize = 15 });
             }
@@ -368,7 +494,7 @@ namespace TestingSystem
             stackPanelQ.Margin = new Thickness(5);
 
             Grid stackPanelQGrid = new Grid();
-            
+
             transparent.Opacity = 0;
             stackPanelQGrid.Background = brushWatermarkBackground;
 
@@ -382,12 +508,17 @@ namespace TestingSystem
             textBlock.Foreground = brushWatermarkForeground;
             textBlock.Visibility = Visibility.Visible;
             textBlock.MinHeight = 20;
+            if (!Text.Equals(""))
+            {
+                textBlock.Visibility = Visibility.Hidden;
+            }
 
             TextBox textBox = new TextBox();
             textBox.MinHeight = 20;
             textBox.TextWrapping = TextWrapping.Wrap;
             textBox.Background = transparent;
             textBox.BorderBrush = brushWatermarkBorder;
+            textBox.Text = Text;
             textBox.TextChanged += TxtUserEntry_TextChanged;
 
             stackPanelQGrid.Children.Add(textBlock);
@@ -402,37 +533,34 @@ namespace TestingSystem
             answersList.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             answersList.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
 
-
-
-            ////////////////
-            if (rightGrid.Children[0] is TextBlock rightTextBlock)
+            if (addbutton)
             {
-                if (rightTextBlock.Text[0].Equals('О'))
+                if (rightGrid.Children[0] is TextBlock rightTextBlock)
                 {
-                    if (answersList.Items.Count > 0)
+                    if (rightTextBlock.Text[0].Equals('О'))
                     {
-                        if (answersList.Items[0] is Grid answerGrid)
+                        if (answersList.Items.Count > 0)
                         {
-                            if (answerGrid.Children[0] is RadioButton rb)
+                            if (answersList.Items[0] is Grid answerGrid)
                             {
-                                answersList.Items.Add(AddRadioAnswer(rb.GroupName,1));
+                                if (answerGrid.Children[0] is RadioButton rb)
+                                {
+                                    answersList.Items.Add(AddRadioAnswer(rb.GroupName, 1));
+                                }
                             }
                         }
+                        else
+                        {
+                            answersList.Items.Add(AddRadioAnswer(radioIndex.ToString(), 1));
+                            radioIndex++;
+                        }
                     }
-                    else
+                    else if (rightTextBlock.Text[0].Equals('Н'))
                     {
-                        answersList.Items.Add(AddRadioAnswer(radioIndex.ToString(), 1));
-                        radioIndex++;
+                        answersList.Items.Add(AddCheckboxAnswer(1));
                     }
-                }
-                else if (rightTextBlock.Text[0].Equals('Н'))
-                {
-                    answersList.Items.Add(AddCheckboxAnswer(1));
                 }
             }
-            
-
-
 
             DockPanel dockButtons = new DockPanel();
 
@@ -448,7 +576,7 @@ namespace TestingSystem
             dockButtons.Children.Add(add);
             DockPanel.SetDock(add, Dock.Left);
 
-            dockButtons.Children.Add(new TextBlock() { Text = "   Или   ", Margin = new Thickness(0, 10, 0, 0)});
+            dockButtons.Children.Add(new TextBlock() { Text = "   Или   ", Margin = new Thickness(0, 10, 0, 0) });
 
             Button addOther = new Button();
             addOther.Height = 20;
@@ -467,8 +595,6 @@ namespace TestingSystem
             grid.Children.Add(stackPanelA);
             Grid.SetRow(stackPanelA, 1);
 
-            
-
             Button delQ = new Button();
             delQ.Height = 30;
             delQ.Margin = new Thickness(5);
@@ -483,12 +609,97 @@ namespace TestingSystem
 
             grid.Children.Add(rightGrid);
 
-
             QListbox.Items.Add(grid);
+            return QListbox.Items.Count - 1;
+        }
+
+        private void AddQ_Click(object sender, RoutedEventArgs e)
+        {
+            if (QType.SelectedIndex == 0)
+            {
+                AddQuestion("Radio");
+            }
+            else if (QType.SelectedIndex == 1)
+            {
+                AddQuestion("Checkbox");
+            }
+        }
+
+        public async Task ClearOldTestData(string testName)
+        {
+            //Открытие подключения
+            await sqlConnection.OpenAsync();
+
+            //Чтение id добавленного ТЕСТА в базе данных для удаления ВОПРОСОВ
+            SqlDataReader dataReader = null;
+            SqlCommand sqlCommandSELECT = new SqlCommand($"SELECT [Id] From [Tests] WHERE Name=N'{testName}'", sqlConnection);
+            try
+            {
+                dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                await dataReader.ReadAsync();
+                int Tests_id = Convert.ToInt32(dataReader["Id"]);
+                dataReader.Close();
+
+                sqlCommandSELECT = new SqlCommand($"SELECT [Id] FROM [Questions] WHERE Tests_id=N'{Tests_id}'", sqlConnection);
+                dataReader = null;
+                List<int> Questions_ids = new List<int>();
+                try
+                {
+                    dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                    while (await dataReader.ReadAsync())
+                    {
+                        Questions_ids.Add(Convert.ToInt32(dataReader["Id"]));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.Source, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    dataReader.Close();
+                }
+                foreach (int Questions_id in Questions_ids)
+                {
+                    SqlCommand sqlCommandDELETE_Answers = new SqlCommand($"DELETE FROM [Answers] WHERE [Questions_id]=@Questions_id", sqlConnection);
+                    sqlCommandDELETE_Answers.Parameters.AddWithValue("Questions_id", Questions_id);
+                    await sqlCommandDELETE_Answers.ExecuteNonQueryAsync();
+                }
+
+                SqlCommand sqlCommandDELETE = new SqlCommand($"DELETE FROM [Questions] WHERE [Tests_id]=@Tests_id", sqlConnection);
+                sqlCommandDELETE.Parameters.AddWithValue("Tests_id", Tests_id);
+                await sqlCommandDELETE.ExecuteNonQueryAsync();
+
+                sqlCommandDELETE = new SqlCommand($"DELETE FROM [Tests] WHERE [Name]=@Name", sqlConnection);
+                sqlCommandDELETE.Parameters.AddWithValue("Name", testName);
+                await sqlCommandDELETE.ExecuteNonQueryAsync();
+
+                for (int i = 0; i < TestsList.Items.Count; i++)
+                {
+                    if (TestsList.Items[i] is Grid grid)
+                    {
+                        if (grid.Children[0] is TextBlock testNameTextBox)
+                        {
+                            if (testName.Equals(testNameTextBox.Text))
+                            {
+                                TestsList.Items.RemoveAt(i);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+            sqlConnection.Close();
         }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            string CurTestName = TestName.Text;
+            await ClearOldTestData(CurTestName);
+
             //Добавление элемента списка тестов 
             Grid grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -500,7 +711,7 @@ namespace TestingSystem
             TextBlock nameTextBlock = new TextBlock();
             nameTextBlock.FontSize = 20;
             nameTextBlock.TextWrapping = TextWrapping.Wrap;
-            nameTextBlock.Text = TestName.Text;
+            nameTextBlock.Text = CurTestName;
             nameTextBlock.Margin = new Thickness(10);
             Grid.SetColumn(nameTextBlock, 0);
             Grid.SetColumnSpan(nameTextBlock, 4);
@@ -518,13 +729,13 @@ namespace TestingSystem
             TestsList.Items.Add(grid);
 
             /////Сохранение данных теста в БД
+            //Открытие подключения
             await sqlConnection.OpenAsync();
 
             //Добавление теста
-            string CurTestName = nameTextBlock.Text;
             SqlCommand sqlCommandINSERT = new SqlCommand("INSERT INTO [Tests] (Name, Status)VALUES(@Name, @Status)", sqlConnection);
             sqlCommandINSERT.Parameters.AddWithValue("Name", CurTestName);
-            sqlCommandINSERT.Parameters.AddWithValue("Status", "Open");
+            sqlCommandINSERT.Parameters.AddWithValue("Status", "Закрыт");
             await sqlCommandINSERT.ExecuteNonQueryAsync();
             //Чтение id добавленного ТЕСТА в базе данных для добавления ВОПРОСОВ
             SqlCommand sqlCommandSELECT = new SqlCommand($"SELECT [Id] From [Tests] WHERE Name=N'{CurTestName}'", sqlConnection);
