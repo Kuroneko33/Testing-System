@@ -60,7 +60,7 @@
                                 <TextBlock FontSize="18" Foreground="{StaticResource brushWatermarkForeground}">Порядок</TextBlock>
                             </ComboBox>
                             <Button x:Name="SaveButton" Click="SaveButton_Click" Grid.ColumnSpan="2" Grid.Row="1" MinHeight="30" Margin="20" >
-                                <TextBlock FontSize="20" Foreground="{StaticResource brushWatermarkForeground}">Сохранить тест</TextBlock>
+                                <TextBlock FontSize="20">Сохранить тест</TextBlock>
                             </Button>
                         </Grid>
                     </Grid>

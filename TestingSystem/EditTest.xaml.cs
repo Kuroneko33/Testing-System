@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,10 +29,14 @@ namespace TestingSystem
         int radioIndex = 0;
         public ObservableCollection<int> ints { get; set; }
         public ListBox TestsList = new ListBox();
+        SqlConnection sqlConnection;
+
         public EditTest(ListBox TestsListbox)
         {
             InitializeComponent();
             TestsList = TestsListbox;
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Kuroneko\source\repos\Testing-System\TestingSystem\TestingSystemDB.mdf;Integrated Security=True";
+            sqlConnection = new SqlConnection(connectionString);
         }
         
         private void TxtUserEntry_TextChanged(object sender, TextChangedEventArgs e)
@@ -482,8 +487,9 @@ namespace TestingSystem
             QListbox.Items.Add(grid);
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            //Добавление элемента списка тестов 
             Grid grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -494,7 +500,7 @@ namespace TestingSystem
             TextBlock nameTextBlock = new TextBlock();
             nameTextBlock.FontSize = 20;
             nameTextBlock.TextWrapping = TextWrapping.Wrap;
-            nameTextBlock.Text = "Тест: " + TestName.Text;
+            nameTextBlock.Text = TestName.Text;
             nameTextBlock.Margin = new Thickness(10);
             Grid.SetColumn(nameTextBlock, 0);
             Grid.SetColumnSpan(nameTextBlock, 4);
@@ -510,6 +516,116 @@ namespace TestingSystem
             Grid.SetColumn(statusTextBlock, 4);
             grid.Children.Add(statusTextBlock);
             TestsList.Items.Add(grid);
+
+            /////Сохранение данных теста в БД
+            await sqlConnection.OpenAsync();
+
+            //Добавление теста
+            string CurTestName = nameTextBlock.Text;
+            SqlCommand sqlCommandINSERT = new SqlCommand("INSERT INTO [Tests] (Name, Status)VALUES(@Name, @Status)", sqlConnection);
+            sqlCommandINSERT.Parameters.AddWithValue("Name", CurTestName);
+            sqlCommandINSERT.Parameters.AddWithValue("Status", "Open");
+            await sqlCommandINSERT.ExecuteNonQueryAsync();
+            //Чтение id добавленного ТЕСТА в базе данных для добавления ВОПРОСОВ
+            SqlCommand sqlCommandSELECT = new SqlCommand($"SELECT [Id] From [Tests] WHERE Name=N'{CurTestName}'", sqlConnection);
+            SqlDataReader dataReader = null;
+            dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+            await dataReader.ReadAsync();
+            int Tests_id = Convert.ToInt32(dataReader["Id"]);
+            dataReader.Close();
+            //Добавление вопросов теста
+            for (int i = 0; i < QListbox.Items.Count; i++)
+            {
+                if (QListbox.Items[i] is Grid mainGrid)
+                {
+                    if (mainGrid.Children[0] is StackPanel stackPanel)
+                    {
+                        if (stackPanel.Children[0] is Grid qGrid)
+                        {
+                            TextBox questionTextBox = qGrid.Children[1] as TextBox;
+                            string CurQuestionName = questionTextBox.Text;
+                            string Type = null;
+                            int Points = 1;
+                            if (mainGrid.Children[2] is Grid rightGrid)
+                            {
+                                if (rightGrid.Children[0] is TextBlock rightTextBlock)
+                                {
+                                    if (rightTextBlock.Text[0].Equals('О'))
+                                    {
+                                        Type = "Radio";
+                                    }
+                                    else if (rightTextBlock.Text[0].Equals('Н'))
+                                    {
+                                        Type = "Checkbox";
+                                    }
+                                }
+                            }
+                            sqlCommandINSERT = new SqlCommand("INSERT INTO [Questions] (Name, Type, Points, Tests_id)VALUES(@Name, @Type, @Points, @Tests_id)", sqlConnection);
+                            sqlCommandINSERT.Parameters.AddWithValue("Name", CurQuestionName);
+                            sqlCommandINSERT.Parameters.AddWithValue("Type", Type);
+                            sqlCommandINSERT.Parameters.AddWithValue("Points", Points);
+                            sqlCommandINSERT.Parameters.AddWithValue("Tests_id", Tests_id);
+                            sqlCommandINSERT.ExecuteNonQuery();
+                            //Чтение id добавленного ВОПРОСА в базе данных для добавления ВАРИАНТОВ ОТВЕТОВ
+                            sqlCommandSELECT = new SqlCommand($"SELECT [Id] From [Questions] WHERE Name=N'{CurQuestionName}'", sqlConnection);
+                            dataReader = null;
+                            dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                            await dataReader.ReadAsync();
+                            int Questions_id = Convert.ToInt32(dataReader["Id"]);
+                            dataReader.Close();
+                            //Добавление вариантов ответов для вопросов теста
+                            //
+                            if (mainGrid.Children[1] is StackPanel stackPanelA)
+                            {
+                                if (stackPanelA.Children[0] is ListBox listBoxA)
+                                {
+                                    for (int j = 0; j < listBoxA.Items.Count; j++)
+                                    {
+                                        if (listBoxA.Items[j] is Grid GridA)
+                                        {
+                                            TextBox textBoxA = (TextBox)GridA.Children[2];
+                                            string AnswerText = textBoxA.Text;
+                                            string Correctness = null;
+                                            if (GridA.Children[0] is RadioButton radioButtonA)
+                                            {
+                                                if (radioButtonA.IsChecked.Value == true)
+                                                {
+                                                    Correctness = "true";
+                                                }
+                                                else
+                                                {
+                                                    Correctness = "false";
+                                                }
+                                            }
+                                            else if(GridA.Children[0] is CheckBox checkBoxA)
+                                            {
+                                                if (checkBoxA.IsChecked.Value == true)
+                                                {
+                                                    Correctness = "true";
+                                                }
+                                                else
+                                                {
+                                                    Correctness = "false";
+                                                }
+                                            }
+
+                                            sqlCommandINSERT = new SqlCommand("INSERT INTO [Answers] (Text, Correctness, Questions_id)VALUES(@Text, @Correctness, @Questions_id)", sqlConnection);
+                                            sqlCommandINSERT.Parameters.AddWithValue("Text", AnswerText);
+                                            sqlCommandINSERT.Parameters.AddWithValue("Correctness", Correctness);
+                                            sqlCommandINSERT.Parameters.AddWithValue("Questions_id", Questions_id);
+                                            sqlCommandINSERT.ExecuteNonQuery();
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            sqlConnection.Close();
             this.Close();
         }
     }
