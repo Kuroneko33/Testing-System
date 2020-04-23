@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,12 @@ namespace TestingSystem
     /// </summary>
     public partial class Authorization : Window
     {
+        SqlConnection sqlConnection;
         public Authorization()
         {
             InitializeComponent();
+            string connectionString = Connection.connectionString;
+            sqlConnection = new SqlConnection(connectionString);
         }
 
         private void NameLogin_TextChanged(object sender, TextChangedEventArgs e)
@@ -36,15 +40,15 @@ namespace TestingSystem
             }
         }
 
-        private void FName_TextChanged(object sender, TextChangedEventArgs e)
+        private void Surname_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (FName.Text.Length > 0)
+            if (Surname.Text.Length > 0)
             {
-                FNameWatermark.Opacity = 0;
+                SurnameWatermark.Opacity = 0;
             }
             else
             {
-                FNameWatermark.Opacity = 1;
+                SurnameWatermark.Opacity = 1;
             }
         }
 
@@ -57,6 +61,18 @@ namespace TestingSystem
             else
             {
                 GroupWatermark.Opacity = 1;
+            }
+        }
+
+        private void Number_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (Number.Text.Length > 0)
+            {
+                NumberWatermark.Opacity = 0;
+            }
+            else
+            {
+                NumberWatermark.Opacity = 1;
             }
         }
 
@@ -79,40 +95,120 @@ namespace TestingSystem
             {
                 if (radioButton.Content.Equals("Преподаватель"))
                 {
-                    FName.Visibility = Visibility.Hidden;
-                    FNameWatermark.Visibility = Visibility.Hidden;
-                    Group.Visibility = Visibility.Hidden;
-                    GroupWatermark.Visibility = Visibility.Hidden;
+                    Surname.Visibility = Visibility.Collapsed;
+                    SurnameWatermark.Visibility = Visibility.Collapsed;
+                    Group.Visibility = Visibility.Collapsed;
+                    GroupWatermark.Visibility = Visibility.Collapsed;
+                    Number.Visibility = Visibility.Collapsed;
+                    NumberWatermark.Visibility = Visibility.Collapsed;
                     Password.Visibility = Visibility.Visible;
                     PasswordWatermark.Visibility = Visibility.Visible;
                 }
                 else
                 {
-                    Password.Visibility = Visibility.Hidden;
-                    PasswordWatermark.Visibility = Visibility.Hidden;
-                    FName.Visibility = Visibility.Visible;
-                    FNameWatermark.Visibility = Visibility.Visible;
+                    Password.Visibility = Visibility.Collapsed;
+                    PasswordWatermark.Visibility = Visibility.Collapsed;
+                    Surname.Visibility = Visibility.Visible;
+                    SurnameWatermark.Visibility = Visibility.Visible;
                     Group.Visibility = Visibility.Visible;
                     GroupWatermark.Visibility = Visibility.Visible;
+                    Number.Visibility = Visibility.Visible;
+                    NumberWatermark.Visibility = Visibility.Visible;
                 }
             }    
         }
 
-        private void Enter_Click(object sender, RoutedEventArgs e)
+        private async void Enter_Click(object sender, RoutedEventArgs e)
         {
             if (RBTeacher.IsChecked.Value == true)
             {
-                new TeacherTestsEditor().Show();
-                this.Close();
+                bool authorization = false;
+
+                await sqlConnection.OpenAsync();
+                SqlDataReader dataReader = null;
+                SqlCommand sqlCommandSELECT = new SqlCommand($"SELECT * From [Teachers]", sqlConnection);
+
+                try
+                {
+                    dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                    while (await dataReader.ReadAsync())
+                    {
+                        if (NameLogin.Text.Equals((String)(Convert.ToString(dataReader["Login"])).Trim(' ')) && Password.Password.Equals((String)(Convert.ToString(dataReader["Password"])).Trim(' ')))
+                        {
+                            authorization = true;
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, ex.Source, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                finally
+                {
+                    dataReader.Close();
+                }
+
+                if (authorization)
+                {
+                    new TeacherTestsEditor().Show();
+                    this.Close();
+                }
+                else
+                    MessageBox.Show("Введены неверные данные!", "Ошибка авторизации", MessageBoxButton.OK, MessageBoxImage.Error);
+                sqlConnection.Close();
+
             }
             else if (RBStudent.IsChecked.Value == true)
             {
-                new StudentTestSelect().Show();
-                this.Close();
+                bool check = true;
+                int student_id = 0;
+                string name = NameLogin.Text;
+                string surname = Surname.Text;
+                string group = Group.Text;
+                string number = Number.Text;
+                if (!(number.Length == 8 || number.Length == 0))
+                {
+                    check = false;
+                    MessageBox.Show("Введены неверные данные!\nДлина номера зачётной книжки должна быть равна 9\n(или 0 для теста)", "Ошибка авторизации", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                if (check)
+                {
+                    await sqlConnection.OpenAsync();
+                    //Добавление студента в базу
+                    SqlCommand sqlCommandINSERT = new SqlCommand("INSERT INTO [Students] (Name, Surname, StGroup, Number) VALUES (@Name, @Surname, @StGroup, @Number)", sqlConnection);
+                    sqlCommandINSERT.Parameters.AddWithValue("Name", name);
+                    sqlCommandINSERT.Parameters.AddWithValue("Surname", surname);
+                    sqlCommandINSERT.Parameters.AddWithValue("StGroup", group);
+                    sqlCommandINSERT.Parameters.AddWithValue("Number", number);
+                    await sqlCommandINSERT.ExecuteNonQueryAsync();
+
+                    //Чтение Id только что добавленного студента
+                    SqlDataReader dataReader = null;
+                    SqlCommand sqlCommandSELECT = new SqlCommand($"SELECT TOP 1 [Id] From [Students] ORDER BY Id DESC", sqlConnection);
+
+                    try
+                    {
+                        dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                        await dataReader.ReadAsync();
+                        student_id = Convert.ToInt32(dataReader["Id"]);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, ex.Source, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        dataReader.Close();
+                    }
+
+                    sqlConnection.Close();
+
+                    new StudentTestSelect(student_id).Show();
+                    this.Close();
+                }
             }
-            //Обработка авторизации и запуск соответствующих форм
-            //EditTest editTest = new EditTest();
-            //editTest.Show();
         }
     }
 }

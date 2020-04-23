@@ -25,9 +25,14 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="EditTest" Click="EditTest_Click" Grid.Column ="0" Margin="10" Content="Редактировать тест" FontSize="20" ></Button>
-                    <Button Foreground="Firebrick"  x:Name="DeleteTest" Click="DeleteTest_Click" Grid.Column ="1" Margin="10" Content="Удалить тест" FontSize="20" ></Button>
+                    <Button x:Name="CheckResults" Foreground="LightSteelBlue"  Click="CheckResults_Click" Grid.Column ="0" Grid.ColumnSpan="3" Margin="10" Content="Посмотреть результаты" FontSize="20" ></Button>
+                    <Button x:Name="EditTest" Click="EditTest_Click" Grid.Column ="3" Grid.ColumnSpan="2" Margin="10" Content="Редактировать тест" FontSize="20" ></Button>
+                    <Button Foreground="Firebrick"  x:Name="DeleteTest" Click="DeleteTest_Click" Grid.Column ="5" Margin="10" Content="Удалить тест" FontSize="16" ></Button>
                 </Grid>
                 <Button x:Name="AddTest" Click="AddTest_Click"  Margin="10" Content="Добавить тест" FontSize="20"></Button>
             </StackPanel>

@@ -10,7 +10,7 @@
     <Grid>
         <ScrollViewer Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
             <StackPanel>
-                <ListBox x:Name="TestsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                <ListBox SelectionChanged="TestsListBox_SelectionChanged" x:Name="TestsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
                 </ListBox>
             </StackPanel>
         </ScrollViewer>

@@ -13,20 +13,31 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
-        <RadioButton x:Name="RBStudent" Click="RadioButton_Click" Grid.Column="0" Content="Ученик" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="25" Margin="70 0" FontSize="20" IsChecked="True"></RadioButton>
-        <RadioButton x:Name="RBTeacher" Click="RadioButton_Click" Grid.Column="1" Content="Преподаватель" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="25" Margin="0 0" FontSize="20"></RadioButton>
-        <TextBlock x:Name="NameLoginWatermark" Text="Имя" Foreground="LightSteelBlue" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,0,0,60" Width="320" FontSize="30"/>
-        <TextBox TextChanged="NameLogin_TextChanged" Background="Transparent" x:Name="NameLogin" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,0,0,60" Width="320" FontSize="30"/>
-        <TextBlock Visibility="Visible" x:Name="FNameWatermark" Text="Фамилия" Foreground="LightSteelBlue" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,60,0,0" Width="320" FontSize="30"/>
-        <TextBox TextChanged="FName_TextChanged"  Background="Transparent" x:Name="FName" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,60,0,0" Width="320" FontSize="30"/>
-        <TextBlock Visibility="Visible" x:Name="GroupWatermark" Text="Группа" Foreground="LightSteelBlue" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,180,0,0" Width="320" FontSize="30"/>
-        <TextBox TextChanged="Group_TextChanged"  Background="Transparent" x:Name="Group" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,180,0,0" Width="320" FontSize="30"/>
-        <TextBlock Visibility="Hidden" x:Name="PasswordWatermark" Text="Пароль" Foreground="LightSteelBlue" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,60,0,0" Width="320" FontSize="30"/>
-        <PasswordBox Visibility="Hidden" PasswordChanged="Password_PasswordChanged" x:Name="Password" Background="Transparent" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Margin="0,60,0,0" Width="320" FontSize="30"/>
-        <Button x:Name="Enter" Click="Enter_Click" Grid.ColumnSpan="2" Grid.Row="3" Height="40" Width="320" Content="Войти" FontSize="30" Margin="0 0 0 30"></Button>
+        <RadioButton x:Name="RBStudent" Click="RadioButton_Click" Grid.Column="0" Content="Ученик" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="25" Margin="70 20" FontSize="20" IsChecked="True"></RadioButton>
+        <RadioButton x:Name="RBTeacher" Click="RadioButton_Click" Grid.Column="1" Content="Преподаватель" HorizontalAlignment="Left" VerticalAlignment="Bottom" Height="25" Margin="0 20" FontSize="20"></RadioButton>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid>
+                <TextBlock Margin="10" x:Name="NameLoginWatermark" Text="Имя" Foreground="LightSteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+                <TextBox Margin="10" TextChanged="NameLogin_TextChanged" Background="Transparent" x:Name="NameLogin" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+            </Grid>
+            <Grid>
+                <TextBlock Margin="10" Visibility="Visible" x:Name="SurnameWatermark" Text="Фамилия" Foreground="LightSteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+                <TextBox Margin="10" TextChanged="Surname_TextChanged"  Background="Transparent" x:Name="Surname" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+                <TextBlock Margin="10" Visibility="Hidden" x:Name="PasswordWatermark" Text="Пароль" Foreground="LightSteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+                <PasswordBox Margin="10" Visibility="Hidden" PasswordChanged="Password_PasswordChanged" x:Name="Password" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+            </Grid>
+            <Grid>
+                <TextBlock Margin="10" Visibility="Visible" x:Name="GroupWatermark" Text="Группа" Foreground="LightSteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+                <TextBox Margin="10" TextChanged="Group_TextChanged"  Background="Transparent" x:Name="Group" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+            </Grid>
+            <Grid>
+                <TextBlock Margin="10" Visibility="Visible" x:Name="NumberWatermark" Text="Номер зачётной книжки" Foreground="LightSteelBlue" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+                <TextBox Margin="10" TextChanged="Number_TextChanged"  Background="Transparent" x:Name="Number" HorizontalAlignment="Center" VerticalAlignment="Center" Height="50" Width="350" FontSize="30"/>
+            </Grid>
+            <Button x:Name="Enter" Click="Enter_Click" Grid.ColumnSpan="2" Grid.Row="2" Height="40" Width="350" Content="Войти" FontSize="30" Margin="0 10 0 10"></Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -27,7 +27,6 @@ namespace TestingSystem
         SolidColorBrush brushWatermarkBorder = new SolidColorBrush(Colors.Indigo);
         SolidColorBrush transparent = new SolidColorBrush(Colors.White);
         int radioIndex = 0;
-        public ObservableCollection<int> ints { get; set; }
         public ListBox TestsList = new ListBox();
         SqlConnection sqlConnection;
 
@@ -35,7 +34,7 @@ namespace TestingSystem
         {
             InitializeComponent();
             TestsList = TestsListbox;
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Kuroneko\source\repos\Testing-System\TestingSystem\TestingSystemDB.mdf;Integrated Security=True";
+            string connectionString = Connection.connectionString;
             sqlConnection = new SqlConnection(connectionString);
         }
         
@@ -180,8 +179,7 @@ namespace TestingSystem
                     }
                     string Text = null;
                     string Correctness = null;
-                    int Mode = -1; //1 - обычный вопрос, 0 - другое;
-
+                    
                     //цикл добавления ответов для каждого вопроса
                     sqlCommandSELECT = new SqlCommand($"SELECT * FROM [Answers] WHERE Questions_id=N'{Questions_ids[i]}'", sqlConnection);
                     dataReader = null;
@@ -192,7 +190,6 @@ namespace TestingSystem
                         {
                             Text = Convert.ToString(dataReader["Text"]);
                             Correctness = (String)(Convert.ToString(dataReader["Correctness"])).Trim(' ');
-                            Mode = 1; //тут можно добавить считывание типа вопроса
                             if (Questions_types[i].Equals("Radio"))
                             {
                                 if (answersList.Items.Count > 0)
@@ -201,19 +198,19 @@ namespace TestingSystem
                                     {
                                         if (answerGrid.Children[0] is RadioButton rb)
                                         {
-                                            answersList.Items.Add(AddRadioAnswer(rb.GroupName, Mode, Text, Correctness));
+                                            answersList.Items.Add(AddRadioAnswer(rb.GroupName, Text, Correctness));
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    answersList.Items.Add(AddRadioAnswer(radioIndex.ToString(), Mode, Text, Correctness));
+                                    answersList.Items.Add(AddRadioAnswer(radioIndex.ToString(), Text, Correctness));
                                     radioIndex++;
                                 }
                             }
                             else if (Questions_types[i].Equals("Checkbox"))
                             {
-                                answersList.Items.Add(AddCheckboxAnswer(Mode, Text, Correctness));
+                                answersList.Items.Add(AddCheckboxAnswer(Text, Correctness));
                             }
                         }
                     }
@@ -264,9 +261,7 @@ namespace TestingSystem
         private void AddAnswer_Click(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
-            Button pressedButton1 = new Button();
-            Button pressedButton2 = new Button();
-            int mode = -1;
+            Button pressedButton = new Button();
             for (int i = 0; i < QListbox.Items.Count; i++)
             {
                 if (QListbox.Items[i] is Grid grid)
@@ -277,21 +272,9 @@ namespace TestingSystem
                         {
                             if (dockPanel.Children[0] is Button button1)
                             {
-                                pressedButton1 = button1;
+                                pressedButton = button1;
                             }
-                            if (dockPanel.Children[2] is Button button2)
-                            {
-                                pressedButton2 = button2;
-                            }
-                            if (button.Equals(pressedButton1))
-                            {
-                                mode = 1;
-                            }
-                            else if (button.Equals(pressedButton2))
-                            {
-                                mode = 0;
-                            }
-                            if (mode != -1)
+                            if (button.Equals(pressedButton))
                             {
                                 if (stackPanel.Children[0] is ListBox listBox)
                                 {
@@ -307,19 +290,19 @@ namespace TestingSystem
                                                     {
                                                         if (answerGrid.Children[0] is RadioButton rb)
                                                         {
-                                                            listBox.Items.Add(AddRadioAnswer(rb.GroupName, mode));
+                                                            listBox.Items.Add(AddRadioAnswer(rb.GroupName));
                                                         }
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    listBox.Items.Add(AddRadioAnswer(radioIndex.ToString(), mode));
+                                                    listBox.Items.Add(AddRadioAnswer(radioIndex.ToString()));
                                                     radioIndex++;
                                                 }
                                             }
                                             else if (rightTextBlock.Text[0].Equals('Н'))
                                             {
-                                                listBox.Items.Add(AddCheckboxAnswer(mode));
+                                                listBox.Items.Add(AddCheckboxAnswer());
                                             }
                                         }
                                     }
@@ -331,7 +314,7 @@ namespace TestingSystem
             }
         }
 
-        private Grid AddCheckboxAnswer(int mode, string Text = "", string Correctness = "false")
+        private Grid AddCheckboxAnswer(string Text = "", string Correctness = "false")
         {
             Grid aGrid = new Grid();
             aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
@@ -347,14 +330,7 @@ namespace TestingSystem
 
             TextBlock textBlock1 = new TextBlock();
             textBlock1.Margin = new Thickness(2, 1, 0, 0);
-            if (mode == 1)
-            {
-                textBlock1.Text = "Вариант ответа";
-            }
-            else
-            {
-                textBlock1.Text = "Другое";
-            }
+            textBlock1.Text = "Вариант ответа";
             textBlock1.Foreground = brushWatermarkForeground;
             textBlock1.MinHeight = 20;
             if (!Text.Equals(""))
@@ -390,7 +366,7 @@ namespace TestingSystem
             return aGrid;
         }
 
-        private Grid AddRadioAnswer(string group, int mode, string Text = "", string Correctness = "false")
+        private Grid AddRadioAnswer(string group, string Text = "", string Correctness = "false")
         {
             Grid aGrid = new Grid();
             aGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
@@ -407,14 +383,7 @@ namespace TestingSystem
 
             TextBlock textBlock1 = new TextBlock();
             textBlock1.Margin = new Thickness(2, 1, 0, 0);
-            if (mode == 1)
-            {
-                textBlock1.Text = "Вариант ответа";
-            }
-            else
-            {
-                textBlock1.Text = "Другое";
-            }
+            textBlock1.Text = "Вариант ответа";
             textBlock1.Foreground = brushWatermarkForeground;
             textBlock1.MinHeight = 20;
             if (!Text.Equals(""))
@@ -498,7 +467,6 @@ namespace TestingSystem
             transparent.Opacity = 0;
             stackPanelQGrid.Background = brushWatermarkBackground;
 
-            Style styleEntryFieldStyle = new Style();
             stackPanelQGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
             stackPanelQGrid.VerticalAlignment = VerticalAlignment.Center;
 
@@ -545,19 +513,19 @@ namespace TestingSystem
                             {
                                 if (answerGrid.Children[0] is RadioButton rb)
                                 {
-                                    answersList.Items.Add(AddRadioAnswer(rb.GroupName, 1));
+                                    answersList.Items.Add(AddRadioAnswer(rb.GroupName));
                                 }
                             }
                         }
                         else
                         {
-                            answersList.Items.Add(AddRadioAnswer(radioIndex.ToString(), 1));
+                            answersList.Items.Add(AddRadioAnswer(radioIndex.ToString()));
                             radioIndex++;
                         }
                     }
                     else if (rightTextBlock.Text[0].Equals('Н'))
                     {
-                        answersList.Items.Add(AddCheckboxAnswer(1));
+                        answersList.Items.Add(AddCheckboxAnswer());
                     }
                 }
             }
@@ -575,20 +543,6 @@ namespace TestingSystem
 
             dockButtons.Children.Add(add);
             DockPanel.SetDock(add, Dock.Left);
-
-            dockButtons.Children.Add(new TextBlock() { Text = "   Или   ", Margin = new Thickness(0, 10, 0, 0) });
-
-            Button addOther = new Button();
-            addOther.Height = 20;
-            addOther.Margin = new Thickness(0, 10, 0, 0);
-            addOther.Click += AddAnswer_Click;
-            TextBlock addOthertext = new TextBlock();
-            addOthertext.FontSize = 12;
-            addOthertext.Text = "Добавить вариант другое";
-            addOther.Content = addOthertext;
-
-            dockButtons.Children.Add(addOther);
-            DockPanel.SetDock(addOther, Dock.Right);
 
             stackPanelA.Children.Add(answersList);
             stackPanelA.Children.Add(dockButtons);

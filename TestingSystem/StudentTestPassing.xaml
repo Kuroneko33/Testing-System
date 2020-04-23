@@ -1,0 +1,34 @@
+﻿<Window x:Class="TestingSystem.StudentTestPassing"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TestingSystem"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen" Title="StudentTestPassing" Height="450" Width="800" Closing="Window_Closing">
+    <Grid>
+        <GroupBox Header="Прохождение теста" Padding="5">
+            <ScrollViewer>
+                <StackPanel>
+                    <Grid>
+                        <TextBlock x:Name="TestName" Text="Название теста" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="10" FontSize="20"/>
+                    </Grid>
+                    <Grid ShowGridLines="False">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <ListBox x:Name="QListbox" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0">
+
+                        </ListBox>
+                        <Grid  Grid.Row="1" ShowGridLines="False">
+                            <Button x:Name="SaveButton" Click="SaveButton_Click" MinHeight="30" Margin="20" >
+                                <TextBlock FontSize="20">Сдать тест</TextBlock>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </GroupBox>
+    </Grid>
+</Window>

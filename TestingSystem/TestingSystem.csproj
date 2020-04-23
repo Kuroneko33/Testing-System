@@ -70,6 +70,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Connection.cs" />
+    <Compile Include="StudentTestPassing.xaml.cs">
+      <DependentUpon>StudentTestPassing.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StudentTestSelect.xaml.cs">
       <DependentUpon>StudentTestSelect.xaml</DependentUpon>
     </Compile>
@@ -95,6 +99,10 @@
       <DependentUpon>EditTest.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="StudentTestPassing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StudentTestSelect.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -143,6 +151,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="SQLQueryDelete.sql" />
     <Content Include="TestingSystemDB.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

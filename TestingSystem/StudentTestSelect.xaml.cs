@@ -21,11 +21,13 @@ namespace TestingSystem
     public partial class StudentTestSelect : Window
     {
         SqlConnection sqlConnection;
-        public StudentTestSelect()
+        private int student_id = 0;
+        public StudentTestSelect(int student_id)
         {
             InitializeComponent();
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Kuroneko\source\repos\Testing-System\TestingSystem\TestingSystemDB.mdf;Integrated Security=True";
+            string connectionString = Connection.connectionString;
             sqlConnection = new SqlConnection(connectionString);
+            this.student_id = student_id;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -92,6 +94,24 @@ namespace TestingSystem
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
                 new Authorization().Show();
+        }
+
+        private async void TestsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (TestsListBox.SelectedIndex >= 0)
+            {
+                if (TestsListBox.Items[TestsListBox.SelectedIndex] is Grid grid)
+                {
+                    if (grid.Children[0] is TextBlock testNameTextBox)
+                    {
+                        string testName = testNameTextBox.Text;
+                        StudentTestPassing StudentTestPassingWindow = new StudentTestPassing(TestsListBox) { Owner = this };
+                        StudentTestPassingWindow.Show();
+                        await StudentTestPassingWindow.LoadTest(testName);
+                        this.Hide();
+                    }
+                }
+            }
         }
     }
 }

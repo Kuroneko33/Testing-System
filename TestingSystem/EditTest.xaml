@@ -28,8 +28,8 @@
             <ScrollViewer>
                 <StackPanel>
                     <Grid>
-                        <TextBlock x:Name="TestNameWatermark" Text="Название теста" Foreground="LightSteelBlue" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="10" FontSize="20"/>
-                        <TextBox TextChanged="TestName_TextChanged"  Background="Transparent" x:Name="TestName" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="10" FontSize="20"/>
+                        <TextBlock x:Name="TestNameWatermark" Text="Название теста" Foreground="LightSteelBlue" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="10" FontSize="20"/>
+                        <TextBox TextChanged="TestName_TextChanged"  Background="Transparent" x:Name="TestName" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="30" Margin="10" FontSize="20"/>
                     </Grid>
                     <Grid ShowGridLines="False">
                         <Grid.RowDefinitions>

@@ -24,7 +24,7 @@ namespace TestingSystem
         public TeacherTestsEditor()
         {
             InitializeComponent();
-            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\Kuroneko\source\repos\Testing-System\TestingSystem\TestingSystemDB.mdf;Integrated Security=True";
+            string connectionString = Connection.connectionString;
             sqlConnection = new SqlConnection(connectionString);
             LoadTestsListBox();
         }
@@ -176,8 +176,11 @@ namespace TestingSystem
                         if (grid.Children[0] is TextBlock testNameTextBox)
                         {
                             string testName = testNameTextBox.Text;
-                            EditTest EditTestWindow = new EditTest(TestsListBox) { Owner = this };
-                            await EditTestWindow.ClearOldTestData(testName);
+                            if(MessageBox.Show($"Удалить тест '{testName}'?", "Удаление теста", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                            {
+                                EditTest EditTestWindow = new EditTest(TestsListBox) { Owner = this };
+                                await EditTestWindow.ClearOldTestData(testName);
+                            }
                         }
                     }
                 }
@@ -207,6 +210,11 @@ namespace TestingSystem
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             new Authorization().Show();
+        }
+
+        private void CheckResults_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
