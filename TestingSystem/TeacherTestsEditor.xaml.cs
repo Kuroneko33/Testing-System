@@ -189,18 +189,21 @@ namespace TestingSystem
 
         private async void EditTest_Click(object sender, RoutedEventArgs e)
         {
-            if (TestsListBox.SelectedIndex >= 0)
-            {
-                if (TestsListBox.Items[TestsListBox.SelectedIndex] is Grid grid)
+            if (MessageBox.Show($"Если вы сохраните тест в режиме редактирования, вы не сможете посмотреть результаты прохождения студентов на текущую версию теста.\nЕсли вам нужны результаты прохождения этой версии теста, для выхода из режима редактирования используйте кнопку \"Отмена\"", "Удаление теста", MessageBoxButton.OK, MessageBoxImage.Information) == MessageBoxResult.OK)
+            { 
+                if (TestsListBox.SelectedIndex >= 0)
                 {
-                    if (grid.Children[1] is TextBlock)
+                    if (TestsListBox.Items[TestsListBox.SelectedIndex] is Grid grid)
                     {
-                        if (grid.Children[0] is TextBlock testNameTextBox)
+                        if (grid.Children[1] is TextBlock)
                         {
-                            string testName = testNameTextBox.Text;
-                            EditTest EditTestWindow = new EditTest(TestsListBox) { Owner = this };
-                            EditTestWindow.Show();
-                            await EditTestWindow.LoadTest(testName);
+                            if (grid.Children[0] is TextBlock testNameTextBox)
+                            {
+                                string testName = testNameTextBox.Text;
+                                EditTest EditTestWindow = new EditTest(TestsListBox) { Owner = this };
+                                EditTestWindow.Show();
+                                await EditTestWindow.LoadTest(testName);
+                            }
                         }
                     }
                 }
@@ -212,9 +215,49 @@ namespace TestingSystem
             new Authorization().Show();
         }
 
-        private void CheckResults_Click(object sender, RoutedEventArgs e)
+        private async void CheckResults_Click(object sender, RoutedEventArgs e)
         {
+            if (TestsListBox.SelectedIndex >= 0)
+            {
+                if (TestsListBox.Items[TestsListBox.SelectedIndex] is Grid grid)
+                {
+                    if (grid.Children[1] is TextBlock)
+                    {
+                        if (grid.Children[0] is TextBlock testNameTextBox)
+                        {
+                            string testName = testNameTextBox.Text;
+                            int Tests_id = 0;
+                            //Открытие подключения
+                            await sqlConnection.OpenAsync();
 
+                            //Чтение id добавленного ТЕСТА в базе данных для удаления ВОПРОСОВ
+                            SqlDataReader dataReader = null;
+                            SqlCommand sqlCommandSELECT = new SqlCommand($"SELECT [Id] From [Tests] WHERE Name=N'{testName}'", sqlConnection);
+                            try
+                            {
+                                dataReader = await sqlCommandSELECT.ExecuteReaderAsync();
+                                await dataReader.ReadAsync();
+                                Tests_id = Convert.ToInt32(dataReader["Id"]);
+                                dataReader.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message, ex.Source, MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            finally
+                            {
+                                dataReader.Close();
+                            }
+
+                            sqlConnection.Close();
+
+                            TestResults TestResultsWindow = new TestResults() { Owner = this };
+                            TestResultsWindow.Show();
+                            await TestResultsWindow.LoadTest(Tests_id);
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -13,7 +13,7 @@
         </ControlTemplate>
     </Window.Resources>
     <Grid>
-        <ScrollViewer Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
+        <ScrollViewer>
             <StackPanel>
                 <ListBox x:Name="TestsListBox" Template="{StaticResource NoScroll}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
 
@@ -35,7 +35,7 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <Button x:Name="CheckResults" Foreground="LightSteelBlue"  Click="CheckResults_Click" Grid.Column ="0" Grid.ColumnSpan="3" Margin="10" Content="Посмотреть результаты" FontSize="20" ></Button>
+                    <Button x:Name="CheckResults" Click="CheckResults_Click" Grid.Column ="0" Grid.ColumnSpan="3" Margin="10" Content="Посмотреть результаты" FontSize="20" ></Button>
                     <Button x:Name="EditTest" Click="EditTest_Click" Grid.Column ="3" Grid.ColumnSpan="2" Margin="10" Content="Редактировать тест" FontSize="20" ></Button>
                     <Button Foreground="Firebrick"  x:Name="DeleteTest" Click="DeleteTest_Click" Grid.Column ="5" Margin="10" Content="Удалить тест" FontSize="16" ></Button>
                 </Grid>

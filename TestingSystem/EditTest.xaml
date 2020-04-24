@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TestingSystem"
         mc:Ignorable="d"
         Title="EditTest" Height="450" Width="800" ResizeMode="CanResizeWithGrip"
-        WindowStartupLocation="CenterScreen" MouseWheel="Window_MouseWheel">
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <SolidColorBrush x:Key="brushWatermarkBackground" Color="White" />
         <SolidColorBrush x:Key="brushWatermarkForeground" Color="LightSteelBlue" />

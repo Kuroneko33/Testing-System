@@ -438,6 +438,62 @@ namespace TestingSystem
             }
         }
 
+        private void AddPointsButton(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            for (int i = 0; i < QListbox.Items.Count; i++)
+            {
+                if (QListbox.Items[i] is Grid grid)
+                {
+                    if (grid.Children[2] is Grid rightGrid)
+                    {
+                        if (rightGrid.Children[2] is Button button1)
+                        {
+                            if (button.Equals((Button)button1))
+                            {
+                                if (rightGrid.Children[4] is TextBlock Points)
+                                {
+                                    int points = Convert.ToInt32(Points.Text);
+                                    points++;
+                                    Points.Text = points.ToString();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void SubPointsButton(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            for (int i = 0; i < QListbox.Items.Count; i++)
+            {
+                if (QListbox.Items[i] is Grid grid)
+                {
+                    if (grid.Children[2] is Grid rightGrid)
+                    {
+                        if (rightGrid.Children[3] is Button button1)
+                        {
+                            if (rightGrid.Children[4] is TextBlock Points)
+                            {
+                                if (button.Equals((Button)button1))
+                                {
+                                    int points = Convert.ToInt32(Points.Text);
+                                    if (points > 0)
+                                    {
+                                        points--;
+                                    }
+                                    Points.Text = points.ToString();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+
         private int AddQuestion(string type, bool addbutton = true, string Text = "")
         {
             Grid grid = new Grid();
@@ -560,6 +616,34 @@ namespace TestingSystem
             delQtext.Text = "   Удалить вопрос   ";
             delQ.Content = delQtext;
             rightGrid.Children.Add(delQ);
+
+            Button AddPoints = new Button();
+            AddPoints.Width = 30;
+            AddPoints.Margin = new Thickness(10);
+            AddPoints.VerticalAlignment = VerticalAlignment.Top;
+            AddPoints.HorizontalAlignment = HorizontalAlignment.Right;
+            AddPoints.Click += AddPointsButton;
+            AddPoints.Content = "+";
+            AddPoints.FontSize = 12;
+            rightGrid.Children.Add(AddPoints);
+
+            Button SubPoints = new Button();
+            SubPoints.Width = 30;
+            SubPoints.Margin = new Thickness(10, 35, 10, 10);
+            SubPoints.VerticalAlignment = VerticalAlignment.Top;
+            SubPoints.HorizontalAlignment = HorizontalAlignment.Right;
+            SubPoints.Click += SubPointsButton;
+            SubPoints.Content = "-";
+            SubPoints.FontSize = 12;
+            rightGrid.Children.Add(SubPoints);
+
+            TextBlock Points = new TextBlock();
+            Points.Margin = new Thickness(10, 20, 50, 10);
+            Points.Text = "1";
+            Points.FontSize = 20;
+            Points.HorizontalAlignment = HorizontalAlignment.Right;
+            Points.VerticalAlignment = VerticalAlignment.Top;
+            rightGrid.Children.Add(Points);
 
             grid.Children.Add(rightGrid);
 
@@ -724,6 +808,10 @@ namespace TestingSystem
                                         Type = "Checkbox";
                                     }
                                 }
+                                if (rightGrid.Children[4] is TextBlock PointsStr)
+                                {
+                                    Points = Convert.ToInt32(PointsStr.Text);
+                                }
                             }
                             sqlCommandINSERT = new SqlCommand("INSERT INTO [Questions] (Name, Type, Points, Tests_id)VALUES(@Name, @Type, @Points, @Tests_id)", sqlConnection);
                             sqlCommandINSERT.Parameters.AddWithValue("Name", CurQuestionName);
@@ -797,15 +885,6 @@ namespace TestingSystem
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
-        }
-
-        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (e.Delta > 0)
-                Console.WriteLine("Up");
-
-            else if (e.Delta < 0)
-                Console.WriteLine("Down");
         }
     }
 }
