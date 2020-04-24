@@ -162,7 +162,7 @@ namespace TestingSystem
                 //цикл добавления вопросов
                 for (int i = 0; i < Questions_ids.Count; i++)
                 {
-                    int QlistboxIndex = AddQuestion(Questions_types[i], false, Questions_names[i]);
+                    int QlistboxIndex = AddQuestion(Questions_types[i], false, Questions_points[i], Questions_names[i]);
                     ListBox answersList = null;
                     if (QListbox.Items[QlistboxIndex] is Grid grid)
                     {
@@ -494,7 +494,7 @@ namespace TestingSystem
         }
         
 
-        private int AddQuestion(string type, bool addbutton = true, string Text = "")
+        private int AddQuestion(string type, bool addbutton = true, int Points = 1, string Text = "")
         {
             Grid grid = new Grid();
             grid.RowDefinitions.Add(new RowDefinition());
@@ -637,13 +637,13 @@ namespace TestingSystem
             SubPoints.FontSize = 12;
             rightGrid.Children.Add(SubPoints);
 
-            TextBlock Points = new TextBlock();
-            Points.Margin = new Thickness(10, 20, 50, 10);
-            Points.Text = "1";
-            Points.FontSize = 20;
-            Points.HorizontalAlignment = HorizontalAlignment.Right;
-            Points.VerticalAlignment = VerticalAlignment.Top;
-            rightGrid.Children.Add(Points);
+            TextBlock PointsTextBlock = new TextBlock();
+            PointsTextBlock.Margin = new Thickness(10, 20, 50, 10);
+            PointsTextBlock.Text = Points.ToString();
+            PointsTextBlock.FontSize = 20;
+            PointsTextBlock.HorizontalAlignment = HorizontalAlignment.Right;
+            PointsTextBlock.VerticalAlignment = VerticalAlignment.Top;
+            rightGrid.Children.Add(PointsTextBlock);
 
             grid.Children.Add(rightGrid);
 
@@ -726,8 +726,9 @@ namespace TestingSystem
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //MessageBox.Show(ex.Message, ex.Source, MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             sqlConnection.Close();
