@@ -7,10 +7,15 @@
         mc:Ignorable="d"
         Title="StudentTestSelect" Height="450" Width="800"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing" Loaded="Window_Loaded">
+    <Window.Resources>
+        <ControlTemplate x:Key="NoScroll">
+            <ItemsPresenter></ItemsPresenter>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid>
         <ScrollViewer Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
             <StackPanel>
-                <ListBox SelectionChanged="TestsListBox_SelectionChanged" x:Name="TestsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                <ListBox x:Name="TestsListBox" Template="{StaticResource NoScroll}" SelectionChanged="TestsListBox_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
                 </ListBox>
             </StackPanel>
         </ScrollViewer>

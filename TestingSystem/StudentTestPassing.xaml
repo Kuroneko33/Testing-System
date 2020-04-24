@@ -6,6 +6,11 @@
         xmlns:local="clr-namespace:TestingSystem"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" Title="StudentTestPassing" Height="450" Width="800" Closing="Window_Closing">
+    <Window.Resources>
+        <ControlTemplate x:Key="NoScroll">
+            <ItemsPresenter></ItemsPresenter>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid>
         <GroupBox Header="Прохождение теста" Padding="5">
             <ScrollViewer>
@@ -18,7 +23,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
-                        <ListBox x:Name="QListbox" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0">
+                        <ListBox x:Name="QListbox" Template="{StaticResource NoScroll}"  HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0">
 
                         </ListBox>
                         <Grid  Grid.Row="1" ShowGridLines="False">

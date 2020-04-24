@@ -793,5 +793,19 @@ namespace TestingSystem
             sqlConnection.Close();
             this.Close();
         }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+                Console.WriteLine("Up");
+
+            else if (e.Delta < 0)
+                Console.WriteLine("Down");
+        }
     }
 }

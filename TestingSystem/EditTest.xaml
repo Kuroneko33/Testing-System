@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TestingSystem"
         mc:Ignorable="d"
         Title="EditTest" Height="450" Width="800" ResizeMode="CanResizeWithGrip"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" MouseWheel="Window_MouseWheel">
     <Window.Resources>
         <SolidColorBrush x:Key="brushWatermarkBackground" Color="White" />
         <SolidColorBrush x:Key="brushWatermarkForeground" Color="LightSteelBlue" />
@@ -22,6 +22,9 @@
            Property="HorizontalContentAlignment"
            Value="Stretch" />
         </Style>
+        <ControlTemplate x:Key="NoScroll">
+            <ItemsPresenter></ItemsPresenter>
+        </ControlTemplate>
     </Window.Resources>
     <Grid>
         <GroupBox Header="Редактирование теста" Padding="5">
@@ -36,11 +39,13 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition></RowDefinition>
                         </Grid.RowDefinitions>
-                        <ListBox x:Name="QListbox" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0">
+                        <ListBox x:Name="QListbox" Template="{StaticResource NoScroll}" ItemContainerStyle="{StaticResource StretchedContainerStyle}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="0">
                                
                         </ListBox>
                         <Grid  Grid.Row="1" ShowGridLines="False">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                                 <ColumnDefinition></ColumnDefinition>
                             </Grid.ColumnDefinitions>
@@ -48,10 +53,10 @@
                                 <RowDefinition></RowDefinition>
                                 <RowDefinition></RowDefinition>
                             </Grid.RowDefinitions>
-                            <Button x:Name="AddQ" Grid.Column="0" MinHeight="30" Margin="20" Click="AddQ_Click" >
+                            <Button x:Name="AddQ" Grid.Column="0" Grid.ColumnSpan="2" MinHeight="30" Margin="20" Click="AddQ_Click" >
                                 <TextBlock FontSize="20">Добавить вопрос</TextBlock>
                             </Button>
-                            <ComboBox Name="QType" Grid.Column="1"  Margin="20" Height="30" VerticalAlignment="Center">
+                            <ComboBox Name="QType" Grid.Column="2" Grid.ColumnSpan="2"  Margin="20" Height="30" VerticalAlignment="Center">
                                 <ComboBoxItem IsSelected="True">
                                     <TextBlock FontSize="18">Один из списка</TextBlock>
                                 </ComboBoxItem>
@@ -59,9 +64,8 @@
                                 <TextBlock FontSize="18" Foreground="{StaticResource brushWatermarkForeground}">Сопоставление</TextBlock>
                                 <TextBlock FontSize="18" Foreground="{StaticResource brushWatermarkForeground}">Порядок</TextBlock>
                             </ComboBox>
-                            <Button x:Name="SaveButton" Click="SaveButton_Click" Grid.ColumnSpan="2" Grid.Row="1" MinHeight="30" Margin="20" >
-                                <TextBlock FontSize="20">Сохранить тест</TextBlock>
-                            </Button>
+                            <Button x:Name="SaveButton" Click="SaveButton_Click" Content="Сохранить тест" FontSize="20" Grid.Row="1" Grid.ColumnSpan="3" MinHeight="30" Margin="20"/>
+                            <Button x:Name="CancelButton" Click="CancelButton_Click" Content="Отмена" FontSize="20" Grid.Row="1" Grid.Column="3" MinHeight="30" Margin="20"/>
                         </Grid>
                     </Grid>
                 </StackPanel>

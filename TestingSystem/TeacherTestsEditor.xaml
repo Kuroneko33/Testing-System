@@ -7,10 +7,15 @@
         mc:Ignorable="d"
         Title="TeacherTestsEditor" Height="450" Width="800"
         WindowStartupLocation="CenterScreen" Closing="Window_Closing">
+    <Window.Resources>
+        <ControlTemplate x:Key="NoScroll">
+            <ItemsPresenter></ItemsPresenter>
+        </ControlTemplate>
+    </Window.Resources>
     <Grid>
         <ScrollViewer Grid.ColumnSpan="2" Margin="0,0,-0.4,0">
             <StackPanel>
-                <ListBox x:Name="TestsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                <ListBox x:Name="TestsListBox" Template="{StaticResource NoScroll}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
 
                 </ListBox>
                 <Grid>

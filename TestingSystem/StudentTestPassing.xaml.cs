@@ -22,17 +22,19 @@ namespace TestingSystem
     {
         SolidColorBrush brushWatermarkBackground = new SolidColorBrush(Colors.White);
         SolidColorBrush transparent = new SolidColorBrush(Colors.White);
+        int student_id = 0;
         int radioIndex = 0;
         int allTestScore = 0;
         public ListBox TestsList = new ListBox();
         SqlConnection sqlConnection;
 
-        public StudentTestPassing(ListBox TestsListbox)
+        public StudentTestPassing(ListBox TestsListbox, int student_id)
         {
             InitializeComponent();
             TestsList = TestsListbox;
             string connectionString = Connection.connectionString;
             sqlConnection = new SqlConnection(connectionString);
+            this.student_id = student_id;
         }
 
         public async Task LoadTest(string testName)
@@ -195,6 +197,7 @@ namespace TestingSystem
             ListBox answersList = new ListBox();
             answersList.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             answersList.SetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty, ScrollBarVisibility.Disabled);
+            answersList.SelectionChanged += AnswersList_SelectionChanged;
 
             if (addbutton)
             {
@@ -297,6 +300,22 @@ namespace TestingSystem
             MessageBox.Show($"Вы набрали {studentScore} из {allTestScore} баллов \nВаша оценка: {mark} ", "Ваш результат", MessageBoxButton.OK, MessageBoxImage.Information);
             Owner.Show();
             this.Close();
+        }
+
+        private void AnswersList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox answersList = (ListBox)sender;
+            if (answersList.Items[answersList.SelectedIndex] is Grid aGrid)
+            {
+                if (aGrid.Children[0] is RadioButton radioButton)
+                {
+                    radioButton.IsChecked = !radioButton.IsChecked;
+                }
+                else if(aGrid.Children[0] is CheckBox checkBox)
+                {
+                    checkBox.IsChecked = !checkBox.IsChecked;
+                }
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

@@ -167,10 +167,10 @@ namespace TestingSystem
                 string surname = Surname.Text;
                 string group = Group.Text;
                 string number = Number.Text;
-                if (!(number.Length == 8 || number.Length == 0))
+                if (!(number.Length == 7 || number.Length == 0))
                 {
                     check = false;
-                    MessageBox.Show("Введены неверные данные!\nДлина номера зачётной книжки должна быть равна 9\n(или 0 для теста)", "Ошибка авторизации", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Введены неверные данные!\nДлина номера зачётной книжки должна быть равна 7\n(или 0 для теста)", "Ошибка авторизации", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
                 if (check)

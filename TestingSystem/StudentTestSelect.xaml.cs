@@ -105,7 +105,7 @@ namespace TestingSystem
                     if (grid.Children[0] is TextBlock testNameTextBox)
                     {
                         string testName = testNameTextBox.Text;
-                        StudentTestPassing StudentTestPassingWindow = new StudentTestPassing(TestsListBox) { Owner = this };
+                        StudentTestPassing StudentTestPassingWindow = new StudentTestPassing(TestsListBox, student_id) { Owner = this };
                         StudentTestPassingWindow.Show();
                         await StudentTestPassingWindow.LoadTest(testName);
                         this.Hide();
