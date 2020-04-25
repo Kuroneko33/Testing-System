@@ -61,8 +61,6 @@
                                     <TextBlock FontSize="18">Один из списка</TextBlock>
                                 </ComboBoxItem>
                                 <TextBlock FontSize="18">Несколько из списка</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource brushWatermarkForeground}">Сопоставление</TextBlock>
-                                <TextBlock FontSize="18" Foreground="{StaticResource brushWatermarkForeground}">Порядок</TextBlock>
                             </ComboBox>
                             <Button x:Name="SaveButton" Click="SaveButton_Click" Content="Сохранить тест" FontSize="20" Grid.Row="1" Grid.ColumnSpan="3" MinHeight="30" Margin="20"/>
                             <Button x:Name="CancelButton" Click="CancelButton_Click" Content="Отмена" FontSize="20" Grid.Row="1" Grid.Column="3" MinHeight="30" Margin="20"/>
