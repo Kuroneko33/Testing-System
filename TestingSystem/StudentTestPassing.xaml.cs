@@ -187,6 +187,7 @@ namespace TestingSystem
             textBlock.Margin = new Thickness(2, 1, 0, 0);
             textBlock.Text = Text;
             textBlock.MinHeight = 20;
+            textBlock.TextWrapping = TextWrapping.Wrap;
 
             stackPanelQGrid.Children.Add(textBlock);
             stackPanelQ.Children.Add(stackPanelQGrid);
